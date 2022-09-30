@@ -1,7 +1,7 @@
 # Play-creative
 
-goal : animation with code that reproduce a [video preview](/public/playplay.mp4)
-techs : vue3+typescript+pixijs+animejs
+- goal : animation with code that reproduce a [video preview](/public/playplay.mp4)
+- techs : vue3+typescript+pixijs+animejs
 
 ## Project Setup
 
