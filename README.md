@@ -1,6 +1,7 @@
-# vue3+typescript+pixijs+animejs
+# Play-creative
 
-[video](/public/playplay.mp4)
+goal : animation with code that reproduce a [video preview](/public/playplay.mp4)
+techs : vue3+typescript+pixijs+animejs
 
 ## Project Setup
 

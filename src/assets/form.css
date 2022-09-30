@@ -1,0 +1,56 @@
+.input {
+  cursor: pointer;
+  outline-color: none;
+  outline-style: solid;
+  outline-width: 3px;
+  transition: outline-color 0.2s;
+}
+.input:focus {
+  outline-color: var(--color-border-hover);
+}
+
+.label {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 1rem;
+  cursor: pointer;
+  opacity: 0.8;
+  transition: opacity 0.2s;
+  height: 3rem;
+}
+.label:last-of-type {
+  height: 2rem;
+}
+.label:hover {
+  opacity: 1;
+}
+.label:focus {
+  opacity: 1;
+}
+
+.details {
+  border: solid 1px var(--color-border);
+  border-bottom: none;
+  padding: 0 1rem;
+}
+.details[open] {
+  padding-bottom: 1rem;
+}
+.details:first-of-type {
+  border-top-left-radius: 0.5rem;
+  border-top-right-radius: 0.5rem;
+}
+.details:last-of-type {
+  border-bottom-left-radius: 0.5rem;
+  border-bottom-right-radius: 0.5rem;
+  border-bottom: solid 1px var(--color-border);
+}
+
+.summary {
+  cursor: pointer;
+  margin: 1rem 0;
+  font-weight: bold;
+}
