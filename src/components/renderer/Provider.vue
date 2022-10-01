@@ -4,16 +4,8 @@ export default {
 };
 </script>
 <script lang="ts" setup>
+import { onMounted, ref, provide, onUnmounted, onBeforeUpdate } from "vue";
 import {
-  onMounted,
-  ref,
-  provide,
-  onUnmounted,
-  onBeforeUpdate,
-  unref,
-} from "vue";
-import {
-  settings,
   Application,
   Ticker,
   utils,
@@ -26,14 +18,13 @@ import onResize from "@hooks/onResize";
 import { getWindowResolution } from "@utils/window";
 import RendererController from "./Controller.vue";
 import state, {
-  reactiveState,
   RENDERER_KEY,
   animationsSet,
   type RendererContext,
   type Animate,
 } from "./store";
-
 utils.skipHello();
+
 /**
  * var
  */
@@ -50,7 +41,6 @@ const app = ref<Application>(
     ...props?.options,
   })
 );
-let elapsed = 0.0;
 
 /**
  * methods
@@ -93,23 +83,23 @@ provide<RendererContext>(RENDERER_KEY, {
  * lifecycle
  */
 
-let currentTime = 0;
-let progress = 0;
-
+let currentTime = 0.0;
+let progress = 0.0;
+let elapsed = 0.0;
 const onAnimate = (delta: number) => {
   if (!state.paused) {
+    elapsed += delta;
     currentTime += ticker.value?.deltaMS || 0;
     currentTime = currentTime % state.duration;
-    // console.log(currentTime);
-
-    reactiveState.progress = Math.floor((currentTime / state.duration) * 100);
-    progress = Math.floor((currentTime / state.duration) * 100);
-    elapsed += delta;
-    // console.log(currentTime, Math.floor(currentTime / 1000) % state.steps);
+    // progress = ((currentTime / state.duration) % 1) * 100;
+    progress = (currentTime / state.duration) * 100;
+  } else {
+    progress = state.progress;
+    currentTime = (state.duration * state.progress) / 100;
   }
-  const step = Math.floor(elapsed % state.steps);
 
-  animationsSet.forEach((fn) => fn(delta, elapsed, progress));
+  // const step = Math.floor(elapsed % state.steps);
+  animationsSet.forEach((fn) => fn(delta, elapsed, currentTime, progress));
 };
 
 onMounted(() => {
@@ -117,14 +107,23 @@ onMounted(() => {
   app.value.renderer.resolution = getWindowResolution();
   app.value.renderer.resize(dimension, dimension);
   ticker.value = app.value.ticker.add(onAnimate);
+
   if (!container.value)
     throw new Error("Renderer did not found parent HTMLElement");
   container.value.appendChild(app.value.view);
+
+  Array.from(container.value.children).forEach((el) => {
+    el.style.outline = "solid 1px yellow";
+  });
 });
 
 onResize(() => {
   const dimension = getCanvasDimension();
   app.value.renderer.resize(dimension, dimension);
+  // app.value.renderer.view.style.width =
+  //   dimension * getWindowResolution() + "px";
+  // app.value.renderer.view.style.height =
+  //   dimension * getWindowResolution() + "px";
 });
 
 onBeforeUpdate(() => {
@@ -143,7 +142,7 @@ onUnmounted(() => {
 <template>
   <div class="outer container">
     <div ref="container" class="container"></div>
-    <RendererController />
+    <!-- <RendererController /> -->
     <slot v-if="app instanceof Application && app?.renderer && !!container" />
   </div>
 </template>

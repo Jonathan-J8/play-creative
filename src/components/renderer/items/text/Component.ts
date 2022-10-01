@@ -1,18 +1,13 @@
 import { defineComponent, watch } from "vue";
-import { Container, Filter } from "pixi.js";
+import { BLEND_MODES, Container, Filter, filters } from "pixi.js";
 
 import { deg2rad } from "@utils/converter";
 import injectRenderer from "@renderer/injectRenderer";
-import BaseComponent from "@renderer/items/BaseComponent";
 import type { Animate } from "@renderer/store";
 
-import { createCharacters, createLayout } from "./methods";
+import BaseComponent from "@renderer/items/BaseComponent";
+import { createCharacters, createLayout, waveFragment } from "./methods";
 import state from "./store";
-
-type CanvasSize = {
-  width: number;
-  height: number;
-};
 
 const RendererText = defineComponent({
   name: "RendererText",
@@ -21,91 +16,94 @@ const RendererText = defineComponent({
     const renderer = injectRenderer();
     const { width, height } = renderer.getScreenDimension();
 
-    const containerBack = new Container();
-    renderer.addChild(containerBack);
-    const containerFront = new Container();
-    renderer.addChild(containerFront);
+    // const containerBack = new Container();
+    // renderer.addChild(containerBack);
+    const container = new Container();
+    renderer.addChild(container);
 
-    const createText = (text: string, { width, height }: CanvasSize) => {
-      const layouts = createLayout(text, { width, height });
+    const layouts = createLayout(state.text, { width, height });
+    const characters = createCharacters(
+      state.text,
+      {
+        width,
+        layouts,
+      },
+      {
+        dropShadow: false,
+        dropShadowAngle: deg2rad(45),
+        dropShadowDistance: 1,
+        dropShadowAlpha: 0.8,
+      }
+    );
+    characters.sort(() => 0.5 - Math.random());
+    characters.forEach((c) => {
+      // c.alpha = 0;
+      container.addChild(c);
+    });
 
-      containerFront.removeChildren();
-      createCharacters(
-        text,
-        {
-          width,
-          layouts,
-        },
-        {
-          dropShadow: true,
-          dropShadowAngle: deg2rad(45),
-          dropShadowDistance: 1,
-          dropShadowAlpha: 0.8,
-        }
-      ).forEach((t) => containerFront.addChild(t));
-
-      // containerFront.removeChildren();
-      // createCharacters(
-      //   text,
-      //   {
-      //     width,
-      //     layouts,
-      //   },
-      //   {}
-      // ).forEach((t) => containerFront.addChild(t));
+    const waveUniform = {
+      uTime: 0.1,
+      uPhaseX: 0.1,
+      uPhaseY: 0.1,
+      x1: 5.9,
+      y1: -10.0,
+      amp1: 0.005,
+      amp2: 0.005,
     };
-    createText(state.text, { width, height });
+    const waveFilter = new Filter(undefined, waveFragment, waveUniform);
+    // const paperUniform = {
+    //   uTime: 0.1,
+    //   uPhaseX: 0.1,
+    //   uPhaseY: 0.1,
+    //   x1: 1000.1,
+    //   y1: 1000.1,
+    //   amp1: 0.001,
+    //   amp2: 0.01,
+    // };
+    // const paperFilter = new Filter(undefined, paperFragment, paperUniform);
 
-    //     const uniformFlag = { uTime: 0.1 };
-    //     const filter = new Filter(
-    //       undefined,
-    //       `
-    //         varying vec2 vTextureCoord;
-    //         uniform sampler2D uSampler;
-    //         uniform float uTime;
-    //         void main(void)
-    //         {
-    //            gl_FragColor = texture2D(uSampler, vTextureCoord).yyyw * uTime ;
-    //         }
-    // `,
-    //       uniformFlag
-    //     );
+    const filter = new filters.NoiseFilter(0.5);
+    filter.blendMode = BLEND_MODES.ADD;
 
-    // containerBack.filters = [filter];
-    // containerFront.filters = [filter];
+    container.filters = [waveFilter, filter];
 
-    return { renderer, containerFront, containerBack, createText };
+    return { renderer, container, waveUniform, filter };
   },
 
   mounted() {
-    this.containerFront.children.forEach((text, i) => {
-      text.alpha = 0;
-    });
-    const animate: Animate = (delta, elapsed) => {
-      const step = Math.floor(elapsed % this.containerFront.children.length);
+    // this.container.children.forEach((text, i) => {
+    //   text.alpha = 0;
+    // });
+    const animate: Animate = (delta, elapsed, currentTime, progress) => {
+      // const step = Math.floor(elapsed % this.container.children.length);
+      // this.container.children.forEach((text, i) => {
+      //   if (i === step) text.alpha = text.alpha >= 1 ? 1 : text.alpha + 0.4;
+      // });
+      const step = Math.floor(currentTime % 5);
+      // console.log(currentTime);
 
-      this.containerFront.children.forEach((text, i) => {
-        if (i === step) text.alpha = text.alpha >= 1 ? 1 : text.alpha + 0.4;
-      });
+      // console.log(step);
+
+      if (!step) {
+        this.filter.seed = progress;
+        this.waveUniform.uPhaseX = elapsed * 0.1;
+        this.waveUniform.uPhaseY = elapsed * 0.1;
+        // this.paperUniform.uPhaseX = elapsed * 0.1;
+        // this.paperUniform.uPhaseY = elapsed * 0.1;
+      }
     };
 
-    watch(
-      () => this.renderer.state.paused,
-      (paused) => {
-        if (paused) this.renderer.removeAnimation(animate);
-        else this.renderer.addAnimation(animate);
-      }
-    );
+    this.renderer.addAnimation(animate);
 
-    watch(
-      () => state.text,
-      (stateText) => {
-        const { width, height } = this.renderer.getScreenDimension();
-        this.createText(stateText, { width, height });
-      }
-    );
+    // watch(
+    //   () => this.renderer.state.paused,
+    //   (paused) => {
+    //     if (paused) this.renderer.removeAnimation(animate);
+    //     else this.renderer.addAnimation(animate);
+    //   }
+    // );
 
-    // this.containerFront.children.forEach((t, i) => {
+    // this.container.children.forEach((t, i) => {
     //   t.alpha = 0;
     //   this.renderer.addAnimation(
     //     { targets: t, alpha: 1, easing: "steps(2)", duration: 1000 },
@@ -114,7 +112,7 @@ const RendererText = defineComponent({
     // });
     // this.renderer.addAnimation(
     //   {
-    //     targets: this.containerFront.children,
+    //     targets: this.container.children,
     //     alpha: 1,
     //     easing: "steps(100)",
     //     // delay: anime.stagger(100, { start: 500 }),
@@ -123,21 +121,41 @@ const RendererText = defineComponent({
     // );
 
     // const render = () => {
-    //   this.containerFront.children.forEach((t) => {
+    //   this.container.children.forEach((t) => {
     //     t.alpha = Math.random();
     //   });
     //   requestAnimationFrame(render);
     // };
     // render();
+
+    watch(
+      () => state.text,
+      (text) => {
+        const { width, height } = this.renderer.getScreenDimension();
+        const layouts = createLayout(text, { width, height });
+        const characters = createCharacters(
+          text,
+          {
+            width,
+            layouts,
+          },
+          {
+            dropShadow: true,
+            dropShadowAngle: deg2rad(45),
+            dropShadowDistance: 1,
+            dropShadowAlpha: 0.8,
+          }
+        );
+        characters.sort(() => 0.5 - Math.random());
+        characters.forEach((c) => this.container.addChild(c));
+      }
+    );
   },
 
   unmounted() {
-    this.renderer.removeChild(this.containerBack);
-    this.containerBack.destroy();
-    this.containerBack.removeChild();
-    this.renderer.removeChild(this.containerFront);
-    this.containerFront.removeChild();
-    this.containerFront.destroy();
+    this.renderer.removeChild(this.container);
+    this.container.removeChild();
+    this.container.destroy();
   },
 });
 

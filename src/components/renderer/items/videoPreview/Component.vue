@@ -41,8 +41,9 @@ watch(
     width="300"
     height="300"
     controls
-    :loop="timelineState.loop ? true : false"
+    loop
   />
+  <!-- :loop="timelineState.loop ? true : false" -->
 </template>
 
 <style scoped>

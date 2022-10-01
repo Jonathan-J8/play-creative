@@ -16,15 +16,22 @@ const RendererBackground = defineComponent({
     square.beginFill(hex2num(state.color));
     square.drawRect(0, 0, width, height);
     square.endFill();
-    square.scale.set(1);
+    square.pivot.set(0.5);
     renderer.addChild(square);
 
     return { renderer, square };
   },
 
   mounted() {
-    this.resize = () => {};
-    window.addEventListener("resize", this.resize);
+    // this.resize = () => {
+    //   const dim = this.renderer.getScreenDimension();
+    //   const dim2 = this.renderer.getCanvasDimension();
+    //   console.log(dim, dim2);
+
+    //   this.square.scale.set(1);
+    //   console.log("resize");
+    // };
+    // window.addEventListener("resize", this.resize);
 
     watch(
       () => state.color,

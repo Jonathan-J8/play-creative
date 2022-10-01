@@ -35,6 +35,7 @@ const RendererBackground = defineComponent({
       cell.rotation = deg2rad(Math.random() * state.turbulenceRotation);
       grid.addChild(cell);
     });
+    grid.scale.set(1.3);
 
     const cellRotations: number[] = grid.children.map((cell) => cell.rotation);
 
@@ -45,25 +46,35 @@ const RendererBackground = defineComponent({
 
   mounted() {
     let dir = -1;
-    const angle = deg2rad(8);
-    const animate: Animate = (delta, elapsed, progress) => {
-      const step = Math.floor(elapsed % 50);
+    const angle = deg2rad(80);
+    const animate: Animate = (delta, elapsed, currentTime, progress) => {
+      // const step = Math.floor(progress % 50);
 
-      if (step === 0) {
-        this.grid.children.forEach((cell, i) => {
-          cell.rotation = dir * angle + this.cellRotations[i];
-        });
-        dir = -dir;
-      }
+      // if (step === 0) {
+
+      this.grid.children.forEach((cell, i) => {
+        cell.rotation = dir * angle + this.cellRotations[i];
+      });
+      dir = -dir;
+      // }
     };
 
-    watch(
-      () => this.renderer.state.paused,
-      (paused) => {
-        if (paused) this.renderer.removeAnimation(animate);
-        else this.renderer.addAnimation(animate);
-      }
-    );
+    // this.resize = () => {
+    //   // const { width, height } = this.renderer.getScreenDimension();
+
+    //   this.grid.scale.set(1, 1);
+    // };
+    // window.addEventListener("resize", this.resize);
+
+    // this.renderer.addAnimation(animate);
+
+    // watch(
+    //   () => this.renderer.state.paused,
+    //   (paused) => {
+    //     if (paused) this.renderer.removeAnimation(animate);
+    //     else this.renderer.addAnimation(animate);
+    //   }
+    // );
 
     watch(
       () => [state.count, state.turbulenceXY],

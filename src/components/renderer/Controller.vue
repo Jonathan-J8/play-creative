@@ -20,7 +20,7 @@ const loop = () => {
 
 const seek = (e: Event) => {
   const target = e.target as HTMLInputElement;
-  // reactiveState.progress = parseInt(target?.value) || 0;
+  reactiveState.progress = parseInt(target?.value) || 0;
 };
 </script>
 

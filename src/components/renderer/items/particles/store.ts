@@ -1,6 +1,4 @@
 import { reactive, readonly } from "vue";
-// import LocalStorage from "@utils/LocalStorage";
-// const storage = new LocalStorage("controls", { immutable: false });
 
 type State = {
   count: number;
@@ -14,7 +12,7 @@ type State = {
 const defaultState: State = {
   count: 64,
   color: "#69c2b5",
-  rotation: 120,
+  rotation: 30,
   turbulenceXY: 10,
   turbulenceRotation: 180,
   seed: 0,

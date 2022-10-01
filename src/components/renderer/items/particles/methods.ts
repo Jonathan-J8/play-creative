@@ -8,6 +8,9 @@ type CreateGridProps = {
   rotation: number;
 };
 
+const WIDTH = 170;
+const HEIGHT = 28;
+
 export const createGrid = ({
   width,
   height,
@@ -17,6 +20,7 @@ export const createGrid = ({
     position: true,
     rotation: true,
   });
+
   grid.pivot.x = width / 2;
   grid.pivot.y = height / 2;
   grid.x = width / 2;
@@ -38,7 +42,7 @@ export const createGraphic = ({
 }: CreateGraphicProps): Graphics => {
   const rect = new Graphics();
   rect.beginFill(hex2num(color));
-  rect.drawRect(0, 0, width / 170, height / 28);
+  rect.drawRect(0, 0, width / WIDTH, height / HEIGHT);
   rect.endFill();
   return rect;
 };
@@ -60,14 +64,13 @@ export const createSprite = ({
 }: CreateSpriteProps): Sprite => {
   const col = index % countSquare;
   const row = Math.floor(index / countSquare);
-  const scaleX = width / countSquare + width / countSquare / 2;
-  const scaleY = height / countSquare + height / countSquare / 2;
+  const scaleX = width / countSquare;
+  const scaleY = height / countSquare;
 
   const sprite = new Sprite(texture);
-  sprite.x = col * scaleX;
-  sprite.y = row * scaleY;
-
   sprite.anchor.set(0.5, 0.5);
+  sprite.x = col * scaleX + scaleX / 2 + texture.width / 2;
+  sprite.y = row * scaleY + scaleX / 2 + texture.height / 2;
 
   return sprite;
 };

@@ -85,3 +85,55 @@ export const createCharacters = (
   });
   return textChars;
 };
+
+// export const waveFragment = `
+//       varying vec2 vTextureCoord;
+//       uniform sampler2D uSampler;
+//       uniform float uTime;
+//       void main(void)
+//       {
+//          gl_FragColor = texture2D(uSampler, vTextureCoord).yyyw * uTime ;
+//       }
+//   `;
+
+export const waveFragment = `
+      varying vec2 vTextureCoord;        // holds the Vertex position <-1,+1> !!!
+      uniform sampler2D uSampler;    // used texture unit
+      uniform float uPhaseX, uPhaseY, x1, x2, y1, y2, amp1, amp2;            
+
+      vec2 SineWave( vec2 p )
+      {
+        // convert Vertex position <-1,+1> to texture coordinate <0,1> and some shrinking so the effect dont overlap screen
+        // p.x=( 0.55*p.x)+0.5;
+        // p.y=(-0.55*p.y)+0.5;
+        // p.x=(1.1*p.x)-0.05;
+        // p.y=(1.1*p.y)-0.05;
+        // wave distortion
+        float x = cos( x1 * p.x + uPhaseX ) * amp1;
+        float y = sin( y1 * p.x + uPhaseY ) * amp2;
+        return vec2( p.x + x, p.y + y );
+      }
+
+      void main()
+      {
+        gl_FragColor = texture2D(uSampler,SineWave(vTextureCoord));
+      }
+  `;
+
+export const paperFragment = `
+      varying vec2 vTextureCoord;        // holds the Vertex position <-1,+1> !!!
+      uniform sampler2D uSampler;    // used texture unit
+      uniform float uPhaseX, uPhaseY, x1, x2, y1, y2, amp1, amp2;            
+
+      vec2 SineWave( vec2 p )
+      {
+        float x = sin( x1 * p.y + uPhaseX ) * amp1;
+        float y = sin( y1 * p.x + uPhaseY ) * amp2;
+        return vec2( p.x + x, p.y + y );
+      }
+
+      void main()
+      {
+        gl_FragColor = texture2D(uSampler,SineWave(vTextureCoord));
+      }
+  `;

@@ -14,13 +14,18 @@ type State = {
 };
 
 const defaultState: State = {
-  paused: true,
-  loop: false,
+  paused: false,
+  loop: true,
   progress: 0,
-  duration: 4440,
+  duration: 2345,
 };
 
-export type Animate = (delta: number, elapsed: number, step: number) => void;
+export type Animate = (
+  delta: number,
+  elapsed: number,
+  currentTime: number,
+  progress: number
+) => void;
 
 export const RENDERER_KEY = "renderer";
 
