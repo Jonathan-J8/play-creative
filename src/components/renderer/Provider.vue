@@ -31,6 +31,7 @@ const scale = ref(1);
 const app = ref<Application>(
   new Application({
     antialias: true,
+    autoDensity: true,
     backgroundAlpha: 0,
     width: 100,
     height: 100,
@@ -81,7 +82,8 @@ const resize = () => {
 };
 
 onMounted(() => {
-  app.value.renderer.resolution = getWindowResolution();
+  // TODO : window resolution
+  // app.value.renderer.resolution = 1; //getWindowResolution();
 
   if (!innerContainer.value)
     throw new Error("Renderer did not found parent HTMLElement");

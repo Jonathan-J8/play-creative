@@ -57,27 +57,28 @@ const RendererText = defineComponent({
     this.container.filters = [this.wave, this.noise];
     this.renderer.addChild(this.container);
 
-    const populateContainer = (text: string) => {
+    const populateContainer = (text: string, fontFamily: string) => {
       const { width, height } = this.renderer.getScreenDimension();
       const layouts = createLayout(
         text,
         { width, height },
-        { fill: "#000000" }
+        { fill: "#000000", fontFamily: fontFamily }
       );
       const characters = createCharacters(
         text,
         { width, layouts },
         { fill: this.props.fill }
       );
-      // const randomConstant = Math.floor(Math.sqrt(characters.length));
-      // console.log(randomConstant);
-
-      characters.sort(() => 0.5 - Math.random());
+      const randomConstant = Math.floor(Math.sqrt(characters.length));
+      let inc = 0;
+      characters.sort(() => {
+        return 0.5 - Math.random() + (inc % randomConstant);
+        inc += 1;
+      });
       this.container.removeChildren();
-      // layouts.forEach((l) => this.container.addChild(l));
       characters.forEach((c) => this.container.addChild(c));
     };
-    populateContainer(state.text);
+    populateContainer(state.text, state.fontFamily);
 
     const refreshFadeAnime = () => {
       this.container.children.forEach((t) => {
@@ -125,18 +126,15 @@ const RendererText = defineComponent({
     };
     refreshNoiseAnime();
 
-    watch(
-      () => state.text,
-      (text) => {
-        if (!text) {
-          this.container.removeChildren();
-          this.timeline.remove(this.fadeAnimationID);
-          return;
-        }
-        populateContainer(text);
-        refreshFadeAnime();
+    watch(state, (state) => {
+      if (!state.text) {
+        this.container.removeChildren();
+        this.timeline.remove(this.fadeAnimationID);
+        return;
       }
-    );
+      populateContainer(state.text, state.fontFamily);
+      refreshFadeAnime();
+    });
   },
 
   unmounted() {

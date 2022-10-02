@@ -67,6 +67,7 @@ const RendererBackground = defineComponent({
           return el.rotation + deg2rad(20);
         },
         loop: true,
+        duration: 1500,
         easing: "steps(2)",
         autoplay: false,
       });

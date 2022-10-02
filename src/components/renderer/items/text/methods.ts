@@ -4,12 +4,12 @@ import { WIDTH_NORMALIZE, HEIGHT_NORMALIZE } from "./constants";
 
 const createText = (text: string, style?: Partial<ITextStyle>): Text => {
   return new Text(text, {
-    fontFamily: "BlinkMacSystemFont",
+    fontFamily: "Arial",
     align: "center",
     dropShadow: false,
     fill: "#ffffff",
-    fontSize: 20,
-    fontWeight: "600",
+    fontSize: 14,
+    fontWeight: "500",
     lineJoin: "round",
     ...style,
   });

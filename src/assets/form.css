@@ -1,12 +1,14 @@
 .input {
   cursor: pointer;
+  border: none;
   outline-color: none;
-  outline-style: solid;
+  outline-style: none;
   outline-width: 3px;
   transition: outline-color 0.2s;
 }
 .input:focus {
   outline-color: var(--color-border-hover);
+  outline-style: solid;
 }
 
 .label {
