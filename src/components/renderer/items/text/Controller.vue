@@ -23,14 +23,21 @@ onMounted(async () => {
   <DetailsSummary summary="Text">
     <label class="label">
       Paragraph
-      <textarea class="input" v-model="reactiveSate.text" rows="2" />
+      <textarea class="input layout" v-model="reactiveSate.text" rows="2" />
     </label>
+    <br />
     <label class="label">
       Font
-      <select v-model="reactiveSate.fontFamily">
+      <select class="layout" v-model="reactiveSate.fontFamily">
         <option disabled value="">Please select a font</option>
         <option v-for="font in fonts" :key="font">{{ font }}</option>
       </select>
     </label>
   </DetailsSummary>
 </template>
+<style scoped>
+.layout {
+  width: 100%;
+  padding: 0.5rem;
+}
+</style>

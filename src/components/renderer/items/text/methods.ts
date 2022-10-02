@@ -120,7 +120,8 @@ export const createWaveFilter = (props?: WaveUniforms) => {
 
       void main()
       {
-        gl_FragColor = texture2D( uSampler , sineWave( vTextureCoord ) );
+        vec2 uv = sineWave( vTextureCoord );
+        gl_FragColor = texture2D( uSampler , uv );
       }
   `;
 
