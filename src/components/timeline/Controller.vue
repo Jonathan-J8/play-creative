@@ -1,27 +1,27 @@
 <script lang="ts">
 export default {
-  name: "RendererController",
+  name: "TimeLineControls",
 };
 </script>
 <script setup lang="ts">
-import { animationsSet, reactiveState } from "./store";
+import { animations, reactiveState } from "./store";
 
 const play = () => {
   reactiveState.paused = !reactiveState.paused;
 
   if (!reactiveState.paused) {
-    animationsSet.forEach((a) => {
+    animations.forEach((a) => {
       a.play();
     });
   } else {
-    animationsSet.forEach((a) => {
+    animations.forEach((a) => {
       a.pause();
     });
   }
 };
 const restart = () => {
   reactiveState.progress = 0;
-  animationsSet.forEach((a) => {
+  animations.forEach((a) => {
     a.seek(0);
   });
 };
@@ -45,17 +45,6 @@ const seek = (e: Event) => {
     </button>
     <button @click="restart">Restart</button>
     <button @click="loop" :class="{ loop: reactiveState.loop }">Loop</button>
-    <!-- <label class="steps">
-      STEPS
-
-      <input
-        v-model="reactiveState.steps"
-        step="1"
-        type="number"
-        min="0"
-        max="100"
-      />
-    </label> -->
     <label class="seek">
       <input
         @input="seek"
@@ -82,6 +71,7 @@ div {
   border-bottom-left-radius: 1rem;
   border-bottom-right-radius: 1rem;
 }
+
 input {
   cursor: pointer;
   background-color: transparent;
@@ -89,6 +79,7 @@ input {
   outline: none;
   color: var(--color-text);
 }
+
 button {
   cursor: pointer;
   text-transform: uppercase;
@@ -100,17 +91,9 @@ button {
 .play {
   min-width: 4rem;
 }
+
 .loop {
   text-decoration: underline;
-}
-.steps {
-  padding: 0.5rem;
-  border: solid 1px var(--color-border);
-  border-radius: 0.5rem;
-  text-align: right;
-}
-.steps > input {
-  text-align: left;
 }
 
 .seek {

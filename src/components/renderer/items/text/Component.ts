@@ -2,18 +2,19 @@ import { defineComponent, watch } from "vue";
 import { BLEND_MODES, Container, Filter, filters } from "pixi.js";
 
 import { deg2rad } from "@utils/converter";
-import injectRenderer from "@renderer/injectRenderer";
+import useRendererProvider from "@renderer/useRendererProvider";
 import type { Animate } from "@renderer/store";
 
 import BaseComponent from "@renderer/items/BaseComponent";
 import { createCharacters, createLayout, waveFragment } from "./methods";
 import state from "./store";
+import anime from "animejs";
 
 const RendererText = defineComponent({
   name: "RendererText",
   extends: BaseComponent,
   setup() {
-    const renderer = injectRenderer();
+    const renderer = useRendererProvider();
     const { width, height } = renderer.getScreenDimension();
 
     // const containerBack = new Container();
@@ -71,29 +72,41 @@ const RendererText = defineComponent({
   },
 
   mounted() {
-    // this.container.children.forEach((text, i) => {
-    //   text.alpha = 0;
-    // });
-    const animate: Animate = (delta, elapsed, currentTime, progress) => {
-      // const step = Math.floor(elapsed % this.container.children.length);
-      // this.container.children.forEach((text, i) => {
-      //   if (i === step) text.alpha = text.alpha >= 1 ? 1 : text.alpha + 0.4;
-      // });
-      const step = Math.floor(currentTime % 5);
-      // console.log(currentTime);
+    this.container.children.forEach((text) => {
+      text.alpha = 0;
+    });
+    const animate = anime({
+      targets: this.container.children,
+      keyframes: [{ alpha: 0 }, { alpha: () => Math.random() }, { alpha: 1 }],
+      delay: anime.stagger(50, { start: 300 }),
+      // easing: "steps(3)",
+      duration: 300,
+      autoplay: false,
+    });
+    // console.log(animate);
 
-      // console.log(step);
+    // this.renderer.addAnimation(animate);
 
-      if (!step) {
-        this.filter.seed = progress;
-        this.waveUniform.uPhaseX = elapsed * 0.1;
-        this.waveUniform.uPhaseY = elapsed * 0.1;
-        // this.paperUniform.uPhaseX = elapsed * 0.1;
-        // this.paperUniform.uPhaseY = elapsed * 0.1;
-      }
-    };
+    // const animate: Animate = (delta, elapsed, currentTime, progress) => {
+    //   // const step = Math.floor(elapsed % this.container.children.length);
+    //   // this.container.children.forEach((text, i) => {
+    //   //   if (i === step) text.alpha = text.alpha >= 1 ? 1 : text.alpha + 0.4;
+    //   // });
+    //   const step = Math.floor(currentTime % 5);
+    //   // console.log(currentTime);
 
-    this.renderer.addAnimation(animate);
+    //   // console.log(step);
+
+    //   if (!step) {
+    //     this.filter.seed = progress;
+    //     this.waveUniform.uPhaseX = elapsed * 0.1;
+    //     this.waveUniform.uPhaseY = elapsed * 0.1;
+    //     // this.paperUniform.uPhaseX = elapsed * 0.1;
+    //     // this.paperUniform.uPhaseY = elapsed * 0.1;
+    //   }
+    // };
+
+    // this.renderer.addAnimation(animate);
 
     // watch(
     //   () => this.renderer.state.paused,

@@ -1,123 +1,90 @@
 import { defineComponent, watch } from "vue";
-import type { RenderTexture } from "pixi.js";
+import type { Sprite, RenderTexture } from "pixi.js";
 
 import { deg2rad } from "@/utils/converter";
-import injectRenderer from "@renderer/injectRenderer";
-import type { Animate } from "@renderer/store";
+import useRendererProvider from "@renderer/useRendererProvider";
 
 import BaseComponent from "../BaseComponent";
 import { createGrid, createGraphic, createCells } from "./methods";
 import state from "./store";
+import useTimeline from "@timeline/useTimeline";
+import { ANIMATION_KEY } from "./constants";
 
 const RendererBackground = defineComponent({
   name: "RendererParticles",
 
   extends: BaseComponent,
   setup() {
-    const renderer = injectRenderer();
+    const renderer = useRendererProvider();
+    const timeline = useTimeline();
     const { width, height } = renderer.getScreenDimension();
-
     const grid = createGrid({ width, height, rotation: state.rotation });
+    console.log(width, height);
 
-    const texture = renderer.generateTexture(
-      createGraphic({ width, height, color: state.color })
-    );
-
-    createCells({
-      texture,
-      width,
-      height,
-      count: state.count,
-    }).forEach((cell) => {
-      const xy = Math.random() * state.turbulenceXY - state.turbulenceXY / 2;
-      cell.x = cell.x + xy;
-      cell.y = cell.y + xy;
-      cell.rotation = deg2rad(Math.random() * state.turbulenceRotation);
-      grid.addChild(cell);
-    });
-    grid.scale.set(1.3);
-
-    const cellRotations: number[] = grid.children.map((cell) => cell.rotation);
-
-    renderer.addChild(grid);
-
-    return { renderer, grid, cellRotations };
+    return {
+      renderer,
+      timeline,
+      grid,
+    };
   },
 
   mounted() {
-    let dir = -1;
-    const angle = deg2rad(80);
-    const animate: Animate = (delta, elapsed, currentTime, progress) => {
-      // const step = Math.floor(progress % 50);
+    this.renderer.addChild(this.grid);
 
-      // if (step === 0) {
+    const populateGrid = () => {
+      const { width, height } = this.renderer.getScreenDimension();
 
-      this.grid.children.forEach((cell, i) => {
-        cell.rotation = dir * angle + this.cellRotations[i];
+      const texture =
+        (this.grid.children[0]?.texture as RenderTexture) ||
+        this.renderer.generateTexture(
+          createGraphic({ width, height, color: state.color })
+        );
+
+      this.grid.removeChildren();
+      const cells = createCells({
+        texture,
+        width,
+        height,
+        count: state.count,
       });
-      dir = -dir;
-      // }
+
+      cells.forEach((cell) => {
+        const turbulenceXY =
+          Math.random() * state.turbulenceXY - state.turbulenceXY / 2;
+        cell.x = cell.x + turbulenceXY;
+        cell.y = cell.y + turbulenceXY;
+        cell.rotation = deg2rad(Math.random() * state.turbulenceRotation);
+        this.grid.addChild(cell);
+      });
     };
+    populateGrid();
 
-    // this.resize = () => {
-    //   // const { width, height } = this.renderer.getScreenDimension();
-
-    //   this.grid.scale.set(1, 1);
-    // };
-    // window.addEventListener("resize", this.resize);
-
-    // this.renderer.addAnimation(animate);
-
-    // watch(
-    //   () => this.renderer.state.paused,
-    //   (paused) => {
-    //     if (paused) this.renderer.removeAnimation(animate);
-    //     else this.renderer.addAnimation(animate);
-    //   }
-    // );
+    const refreshAnimation = () => {
+      this.timeline.remove(ANIMATION_KEY);
+      this.timeline.add(ANIMATION_KEY, {
+        targets: this.grid.children,
+        rotation: (el: Sprite) => {
+          // return el.rotation + deg2rad(100);
+          return el.rotation + deg2rad(20);
+        },
+        loop: true,
+        easing: "steps(2)",
+        autoplay: false,
+      });
+    };
+    refreshAnimation();
 
     watch(
-      () => [state.count, state.turbulenceXY],
-      ([count, turbulenceXY]) => {
-        const { width, height } = this.renderer.getScreenDimension();
+      () => [state.count, state.turbulenceXY, state.turbulenceRotation],
+      ([count]) => {
         if (count === 0) {
           this.grid.removeChildren();
+          this.timeline.remove(ANIMATION_KEY);
           return;
         }
 
-        let texture =
-          (this.grid.children[0]?.texture as RenderTexture) || undefined;
-        if (!texture) {
-          texture = this.renderer.generateTexture(
-            createGraphic({ width, height, color: state.color })
-          );
-        }
-
-        this.grid.removeChildren();
-        this.cellRotations = [];
-        createCells({
-          texture,
-          width,
-          height,
-          count,
-        }).forEach((cell) => {
-          const xy = Math.random() * turbulenceXY - turbulenceXY / 2;
-          cell.x = cell.x + xy;
-          cell.y = cell.y + xy;
-          cell.rotation = deg2rad(Math.random() * state.turbulenceRotation);
-          this.cellRotations.push(cell.rotation);
-          this.grid.addChild(cell);
-        });
-      }
-    );
-
-    watch(
-      () => state.turbulenceRotation,
-      (turbulenceRotation) => {
-        this.grid.children.forEach((cell, i) => {
-          cell.rotation = deg2rad(Math.random() * turbulenceRotation);
-          this.cellRotations[i] = cell.rotation;
-        });
+        populateGrid();
+        refreshAnimation();
       }
     );
 
@@ -151,6 +118,58 @@ const RendererBackground = defineComponent({
 });
 
 export default RendererBackground;
+
+// function minMax(val: number, min: number, max: number) {
+//   return Math.min(Math.max(val, min), max);
+// }
+// Math.ceil((minMax(t, 0.000001, 1)) * steps) * (1 / steps);
+// (Math.floor((t / dur) * steps) / steps);
+
+// let dir = -1;
+// const steps = 3;
+// const angle = deg2rad(80);
+// const animate: Animate = (delta, elapsed, currentTime, progress) => {
+//   // const step = Math.floor(progress % 50);
+//   // const s = Math.floor(
+//   //   ((currentTime / this.renderer.state.duration) * steps) / steps
+//   // );
+//   const s = Math.floor(currentTime % 30);
+
+//   if (!s) {
+//     this.grid.children.forEach((cell, i) => {
+//       cell.rotation = dir * angle + this.cellRotations[i];
+//     });
+//     dir = -dir;
+//   }
+// };
+
+// watch(
+//   () => this.renderer.state.paused,
+//   (paused) => {
+//     // if (paused) this.renderer.removeAnimation(animate);
+//     // else this.renderer.addAnimation(animate);
+//     if (paused) animate.pause();
+//     else animate.play();
+//   }
+// );
+
+// const animate = anime({
+//   targets: this.grid.children,
+//   rotation: (el: Sprite) => {
+//     return el.rotation + deg2rad(20);
+//   },
+//   loop: true,
+//   easing: "steps(2)",
+//   duration: this.renderer.state.duration,
+//   autoplay: false,
+// });
+
+//
+//
+//
+//
+//
+//
 
 // const rect = createGraphic({
 //   width,

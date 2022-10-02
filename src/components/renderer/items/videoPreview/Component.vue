@@ -5,31 +5,31 @@ export default {
 </script>
 <script lang="ts" setup>
 import { watch, ref } from "vue";
-import timelineState from "@renderer/timeline/store";
+// import timelineState from "@renderer/timeline/store";
 import state from "./store";
 
 const video = ref<HTMLVideoElement | null>(null);
 
-watch(
-  () => timelineState.paused,
-  (paused) => {
-    if (!video.value) return;
-    if (state.opacity === 0) {
-      video.value.pause();
-      return;
-    }
-    if (paused) video.value.pause();
-    else video.value.play();
-  }
-);
+// watch(
+//   () => timelineState.paused,
+//   (paused) => {
+//     if (!video.value) return;
+//     if (state.opacity === 0) {
+//       video.value.pause();
+//       return;
+//     }
+//     if (paused) video.value.pause();
+//     else video.value.play();
+//   }
+// );
 
-watch(
-  () => timelineState.progress,
-  (progress) => {
-    if (!video.value) return;
-    video.value.currentTime = video.value.duration * (progress / 100);
-  }
-);
+// watch(
+//   () => timelineState.progress,
+//   (progress) => {
+//     if (!video.value) return;
+//     video.value.currentTime = video.value.duration * (progress / 100);
+//   }
+// );
 </script>
 
 <template>

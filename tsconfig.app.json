@@ -9,6 +9,7 @@
       "@/*": ["./src/*"],
       "@icons/*": ["./src/components/icons/*"],
       "@renderer/*": ["./src/components/renderer/*"],
+      "@timeline/*": ["./src/components/timeline/*"],
       "@ui/*": ["./src/components/ui/*"],
       "@hooks/*": ["./src/hooks/*"],
       "@utils/*": ["./src/utils/*"]

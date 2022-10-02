@@ -1,7 +1,7 @@
 import { defineComponent, watch } from "vue";
 import { Graphics } from "pixi.js";
 import { hex2num } from "@utils/converter";
-import injectRenderer from "@renderer/injectRenderer";
+import useRendererProvider from "@renderer/useRendererProvider";
 import BaseComponent from "@/components/renderer/items/BaseComponent";
 import state from "./store";
 
@@ -9,7 +9,7 @@ const RendererBackground = defineComponent({
   name: "RendererBackground",
   extends: BaseComponent,
   setup() {
-    const renderer = injectRenderer();
+    const renderer = useRendererProvider();
     const square = new Graphics();
     const { width, height } = renderer.getScreenDimension();
 
@@ -25,7 +25,6 @@ const RendererBackground = defineComponent({
   mounted() {
     // this.resize = () => {
     //   const dim = this.renderer.getScreenDimension();
-    //   const dim2 = this.renderer.getCanvasDimension();
     //   console.log(dim, dim2);
 
     //   this.square.scale.set(1);

@@ -16,6 +16,9 @@ export default defineConfig({
       "@renderer": fileURLToPath(
         new URL("./src/components/renderer", import.meta.url)
       ),
+      "@timeline": fileURLToPath(
+        new URL("./src/components/timeline", import.meta.url)
+      ),
       "@ui": fileURLToPath(new URL("./src/components/ui", import.meta.url)),
       "@utils": fileURLToPath(new URL("./src/utils", import.meta.url)),
       "@hooks": fileURLToPath(new URL("./src/hooks", import.meta.url)),

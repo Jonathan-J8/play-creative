@@ -8,8 +8,8 @@ type CreateGridProps = {
   rotation: number;
 };
 
-const WIDTH = 170;
-const HEIGHT = 28;
+const TXT_WIDTH = 221;
+const TXT_HEIGHT = 36.4;
 
 export const createGrid = ({
   width,
@@ -26,6 +26,7 @@ export const createGrid = ({
   grid.x = width / 2;
   grid.y = height / 2;
   grid.rotation = deg2rad(rotation);
+  grid.scale.set(1.3);
   return grid;
 };
 
@@ -42,7 +43,7 @@ export const createGraphic = ({
 }: CreateGraphicProps): Graphics => {
   const rect = new Graphics();
   rect.beginFill(hex2num(color));
-  rect.drawRect(0, 0, width / WIDTH, height / HEIGHT);
+  rect.drawRect(0, 0, width / TXT_WIDTH, height / TXT_HEIGHT);
   rect.endFill();
   return rect;
 };

@@ -13,6 +13,8 @@ import ControllerParticles from "@renderer/items/particles/Controller.vue";
 import ControllerBackground from "@renderer/items/background/Controller.vue";
 import RendererText from "@renderer/items/text/Component";
 import ControllerText from "@renderer/items/text/Controller.vue";
+
+import TimelineController from "@/components/timeline/Controller.vue";
 </script>
 
 <template>
@@ -29,7 +31,7 @@ import ControllerText from "@renderer/items/text/Controller.vue";
 
     <main>
       <div class="controller">
-        <h2 class="sr-only">Animation Controls Form</h2>
+        <h2 class="sr-only">Renderer Controls Form</h2>
         <ControllerText />
         <ControllerParticles />
         <ControllerBackground />
@@ -38,12 +40,13 @@ import ControllerText from "@renderer/items/text/Controller.vue";
       <div class="renderer">
         <h2 class="sr-only">Animation Renderer</h2>
 
-        <RendererProvider>
+        <RendererProvider :options="{ width: 540, height: 540 }">
           <RendererBackground />
           <RendererParticles />
           <RendererText />
           <RendererVideoPreview />
         </RendererProvider>
+        <TimelineController />
       </div>
     </main>
   </ContainerMain>

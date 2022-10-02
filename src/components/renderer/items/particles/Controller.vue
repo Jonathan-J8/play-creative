@@ -25,19 +25,6 @@ const handleTurbulenceRotation = range2numberFromObject(
     </label>
 
     <label class="label">
-      Count
-      <input
-        class="input"
-        :value="reactiveSate.count"
-        @input="handleCount"
-        type="range"
-        min="0"
-        max="100"
-        step="1"
-      />
-      &nbsp;{{ reactiveSate.count }}
-    </label>
-    <label class="label">
       Rotation
       <input
         class="input"
@@ -49,6 +36,19 @@ const handleTurbulenceRotation = range2numberFromObject(
         step="1"
       />
       &nbsp;{{ reactiveSate.rotation }}
+    </label>
+    <label class="label">
+      Count
+      <input
+        class="input"
+        :value="reactiveSate.count"
+        @input="handleCount"
+        type="range"
+        min="0"
+        max="100"
+        step="1"
+      />
+      &nbsp;{{ reactiveSate.count }}
     </label>
     <label class="label">
       Turbulence XY

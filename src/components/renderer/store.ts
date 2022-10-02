@@ -5,6 +5,7 @@ import type {
   IRenderableObject,
   RenderTexture,
 } from "pixi.js";
+import type { AnimeInstance } from "animejs";
 
 type State = {
   paused: boolean;
@@ -14,32 +15,30 @@ type State = {
 };
 
 const defaultState: State = {
-  paused: false,
+  paused: true,
   loop: true,
   progress: 0,
   duration: 2345,
 };
 
-export type Animate = (
-  delta: number,
-  elapsed: number,
-  currentTime: number,
-  progress: number
-) => void;
+// export type Animate = (
+//   delta: number,
+//   elapsed: number,
+//   currentTime: number,
+//   progress: number
+// ) => void;
 
 export const RENDERER_KEY = "renderer";
 
-export const animationsSet = new Set<Animate>();
+export const animationsSet = new Set<AnimeInstance>();
 
 export type RendererContext = {
-  state: Readonly<State>;
-  addAnimation: (fn: Animate) => void;
-  removeAnimation: (fn: Animate) => void;
+  // addAnimation: (animation: AnimeInstance) => void;
+  // removeAnimation: (animation: AnimeInstance) => void;
   addChild: (child: DisplayObject) => void;
   removeChild: (child: DisplayObject) => void;
   generateTexture: (displayObject: IRenderableObject) => RenderTexture;
   getScreenDimension: () => Rectangle;
-  getCanvasDimension: () => number;
 };
 
 export const reactiveState = reactive<State>({

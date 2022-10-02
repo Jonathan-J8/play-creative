@@ -7,7 +7,6 @@ export default {
 import { onMounted, ref, provide, onUnmounted, onBeforeUpdate } from "vue";
 import {
   Application,
-  Ticker,
   utils,
   type DisplayObject,
   type IApplicationOptions,
@@ -16,21 +15,17 @@ import {
 
 import onResize from "@hooks/onResize";
 import { getWindowResolution } from "@utils/window";
-import RendererController from "./Controller.vue";
-import state, {
-  RENDERER_KEY,
-  animationsSet,
-  type RendererContext,
-  type Animate,
-} from "./store";
+import { RENDERER_KEY, type RendererContext } from "./store";
 utils.skipHello();
 
 /**
  * var
  */
+
 const props = defineProps<{ options?: IApplicationOptions }>();
-const container = ref<HTMLElement | null>(null);
-const ticker = ref<Ticker | null>(null);
+const outerContainer = ref<HTMLElement | null>(null);
+const innerContainer = ref<HTMLElement | null>(null);
+const scale = ref(1);
 const app = ref<Application>(
   new Application({
     antialias: true,
@@ -45,9 +40,6 @@ const app = ref<Application>(
 /**
  * methods
  */
-const addAnimation = (fn: Animate) => animationsSet.add(fn);
-
-const removeAnimation = (fn: Animate) => animationsSet.delete(fn);
 
 const addChild = (child: DisplayObject) => app.value.stage.addChild(child);
 
@@ -59,23 +51,14 @@ const getScreenDimension = () => app.value.screen;
 const generateTexture = (displayObject: IRenderableObject) =>
   app.value.renderer.generateTexture(displayObject);
 
-const getCanvasDimension = () => {
-  if (!container.value) return 0;
-  const { width, height } = container.value.getBoundingClientRect();
-  return (width > height ? height : width) / getWindowResolution();
-};
-
 /**
  * provider
  */
+
 provide<RendererContext>(RENDERER_KEY, {
-  state,
-  addAnimation,
-  removeAnimation,
   addChild,
   removeChild,
   generateTexture,
-  getCanvasDimension,
   getScreenDimension,
 });
 
@@ -83,48 +66,32 @@ provide<RendererContext>(RENDERER_KEY, {
  * lifecycle
  */
 
-let currentTime = 0.0;
-let progress = 0.0;
-let elapsed = 0.0;
-const onAnimate = (delta: number) => {
-  if (!state.paused) {
-    elapsed += delta;
-    currentTime += ticker.value?.deltaMS || 0;
-    currentTime = currentTime % state.duration;
-    // progress = ((currentTime / state.duration) % 1) * 100;
-    progress = (currentTime / state.duration) * 100;
-  } else {
-    progress = state.progress;
-    currentTime = (state.duration * state.progress) / 100;
-  }
-
-  // const step = Math.floor(elapsed % state.steps);
-  animationsSet.forEach((fn) => fn(delta, elapsed, currentTime, progress));
+const resize = () => {
+  // with this method, the app dimension stay the same on window resize
+  // so, there is no need to resize the app screen/renderer
+  // it resize the scale of the parent element
+  if (!innerContainer.value || !outerContainer.value) return;
+  const w1 = outerContainer.value.clientWidth;
+  const h1 = outerContainer.value.clientHeight;
+  const w2 = innerContainer.value.clientWidth;
+  const h2 = innerContainer.value.clientHeight;
+  scale.value = Math.min(w1 / w2, h1 / h2);
 };
 
 onMounted(() => {
-  const dimension = getCanvasDimension();
   app.value.renderer.resolution = getWindowResolution();
-  app.value.renderer.resize(dimension, dimension);
-  ticker.value = app.value.ticker.add(onAnimate);
 
-  if (!container.value)
+  if (!innerContainer.value)
     throw new Error("Renderer did not found parent HTMLElement");
-  container.value.appendChild(app.value.view);
+  innerContainer.value.appendChild(app.value.view);
 
-  Array.from(container.value.children).forEach((el) => {
-    el.style.outline = "solid 1px yellow";
-  });
+  resize();
+  // Array.from(innerContainer.value.children).forEach((el) => {
+  //   el.style.outline = "solid 1px yellow";
+  // });
 });
 
-onResize(() => {
-  const dimension = getCanvasDimension();
-  app.value.renderer.resize(dimension, dimension);
-  // app.value.renderer.view.style.width =
-  //   dimension * getWindowResolution() + "px";
-  // app.value.renderer.view.style.height =
-  //   dimension * getWindowResolution() + "px";
-});
+onResize(resize);
 
 onBeforeUpdate(() => {
   console.log("trace update");
@@ -132,34 +99,85 @@ onBeforeUpdate(() => {
 
 onUnmounted(() => {
   if (!app.value) return;
-  app.value.ticker.remove(onAnimate);
-
-  // ticker.value?.destroy();
   app.value.destroy();
 });
 </script>
 
 <template>
-  <div class="outer container">
-    <div ref="container" class="container"></div>
-    <!-- <RendererController /> -->
-    <slot v-if="app instanceof Application && app?.renderer && !!container" />
+  <div ref="outerContainer" class="outer-container">
+    <div
+      ref="innerContainer"
+      class="inner-container"
+      :style="{
+        width: `${props?.options?.width || 100}px`,
+        height: `${props?.options?.height || 100}px`,
+        transform: `translate(-50%, -50%) scale(${scale})`,
+      }"
+    ></div>
+
+    <slot
+      v-if="app instanceof Application && app?.renderer && !!innerContainer"
+    />
   </div>
 </template>
 
 <style scoped>
-.container {
+.outer-container {
+  position: relative;
   min-width: 260px;
   min-height: 260px;
   aspect-ratio: 1/1;
 }
-.outer.container {
-  position: relative;
+
+.inner-container {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(1);
+  width: 100px;
+  height: 100px;
 }
 </style>
+
 <!-- 
+  // const addAnimation = (animation: AnimeInstance) => animationsSet.add(animation);
+// const removeAnimation = (animation: AnimeInstance) =>
+//   animationsSet.delete(animation);
+
+
+// const getCanvasDimension = () => {
+//   if (!container.value) return 0;
+//   const { width, height } = container.value.getBoundingClientRect();
+//   return (width > height ? height : width) / getWindowResolution();
+// };
+
+
+const ticker = ref<Ticker | null>(null);
 
 // const addAnimation = (
 //   params: AnimeAnimParams,
 //   timelineOffset?: string | number | undefined
-// ): AnimeTimelineInstance => timeline.add(params, timelineOffset); -->
+// ): AnimeTimelineInstance => timeline.add(params, timelineOffset); 
+
+// const addAnimation = (fn: Animate) => animationsSet.add(fn);
+
+// const removeAnimation = (fn: Animate) => animationsSet.delete(fn);
+
+let currentTime = 0.0;
+// let progress = 0.0;
+// let elapsed = 0.0;
+// const onAnimate = (delta: number) => {
+//   if (!state.paused) {
+//     elapsed += delta;
+//     currentTime += ticker.value?.deltaMS || 0;
+//     currentTime = currentTime % state.duration;
+//     // progress = ((currentTime / state.duration) % 1) * 100;
+//     progress = (currentTime / state.duration) * 100;
+//   } else {
+//     progress = state.progress;
+//     currentTime = (state.duration * state.progress) / 100;
+//   }
+//   // const step = Math.floor(elapsed % state.steps);
+//   // animationsSet.forEach((fn) => fn(delta, elapsed, currentTime, progress));
+// };
+-->
