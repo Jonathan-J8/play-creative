@@ -3,9 +3,9 @@ import anime from "animejs";
 import type { AnimeParams, AnimeInstance } from "animejs";
 
 /**
- * Batch all animations in Map
+ * Batch all animations in a Ref<Map()>
  */
-export const animations = new Map<string, AnimeInstance>();
+export const animations = reactive(new Map<string, AnimeInstance>());
 
 export const add = (key: string, params: AnimeParams) => {
   animations.set(key, anime(params));

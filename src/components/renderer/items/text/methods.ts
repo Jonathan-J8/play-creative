@@ -1,16 +1,5 @@
-import { Text, type ITextStyle } from "pixi.js";
+import { BLEND_MODES, Filter, filters, Text, type ITextStyle } from "pixi.js";
 import { WIDTH_NORMALIZE, HEIGHT_NORMALIZE } from "./constants";
-
-type TextLayoutParams = {
-  width: number;
-  height: number;
-};
-
-type TextCharsParams = {
-  width: number;
-  layouts: Text[];
-  translate?: { x: number; y: number };
-};
 
 const createText = (text: string, style?: Partial<ITextStyle>): Text => {
   return new Text(text, {
@@ -29,6 +18,12 @@ const createText = (text: string, style?: Partial<ITextStyle>): Text => {
  * Split the text by line. Needed to get the right coordinates.
  * The text is centered XY relative the canvas and is not drawn to screen
  */
+
+type TextLayoutParams = {
+  width: number;
+  height: number;
+};
+
 export const createLayout = (
   text: string,
   { width, height }: TextLayoutParams,
@@ -55,6 +50,13 @@ export const createLayout = (
  * Split the text by character. Needed to animates characters individualy.
  * Each character is transposed from the layout position.
  */
+
+type TextCharsParams = {
+  width: number;
+  layouts: Text[];
+  translate?: { x: number; y: number };
+};
+
 export const createCharacters = (
   text: string,
   { width, layouts, translate }: TextCharsParams,
@@ -82,6 +84,54 @@ export const createCharacters = (
     return text;
   });
   return textChars;
+};
+
+export type WaveUniforms = {
+  frequencyX: number;
+  frequencyY: number;
+  amplitude: number;
+  phase: number;
+};
+
+export const createWaveFilter = (props?: WaveUniforms) => {
+  const uniforms = {
+    frequencyX: 0.0,
+    frequencyY: 0.0,
+    phase: 0.0,
+    amplitude: 0.0,
+    ...props,
+  };
+
+  const fragment = `
+      varying vec2 vTextureCoord;        
+      uniform sampler2D uSampler;   
+      uniform float frequencyX, frequencyY, amplitude, phase;            
+
+      vec2 sineWave( vec2 p )
+      {
+        // float x = cos( x1 * p.x + uPhaseX ) * amp1;
+        // float y = sin( y1 * p.x + uPhaseY ) * amp2;
+        float x = cos( frequencyX * p.x + phase ) * (amplitude * 0.001);
+        float y = sin( frequencyY * p.x + phase ) * (amplitude * 0.001);
+        return vec2( p.x + x, p.y + y );
+      }
+
+      void main()
+      {
+        gl_FragColor = texture2D( uSampler , sineWave( vTextureCoord ) );
+      }
+  `;
+
+  const filter = new Filter(undefined, fragment, uniforms);
+
+  return filter;
+};
+
+export const createNoiseFilter = () => {
+  const filter = new filters.NoiseFilter(0.5);
+  filter.blendMode = BLEND_MODES.ADD;
+  filter.resolution = 0.8;
+  return filter;
 };
 
 // export const waveFragment = `

@@ -4,7 +4,7 @@ export default {
 };
 </script>
 <script lang="ts" setup>
-import { onMounted, ref, provide, onUnmounted, onBeforeUpdate } from "vue";
+import { onMounted, ref, provide, onUnmounted } from "vue";
 import {
   Application,
   utils,
@@ -67,9 +67,9 @@ provide<RendererContext>(RENDERER_KEY, {
  */
 
 const resize = () => {
-  // with this method, the app dimension stay the same on window resize
-  // so, there is no need to resize the app screen/renderer
-  // it resize the scale of the parent element
+  // methods who resize the scale of the parent htmlelement
+  // the app scale stay the same on window resize so
+  // there is no need to resize the app screen/renderer
   if (!innerContainer.value || !outerContainer.value) return;
   const w1 = outerContainer.value.clientWidth;
   const h1 = outerContainer.value.clientHeight;
@@ -86,16 +86,9 @@ onMounted(() => {
   innerContainer.value.appendChild(app.value.view);
 
   resize();
-  // Array.from(innerContainer.value.children).forEach((el) => {
-  //   el.style.outline = "solid 1px yellow";
-  // });
 });
 
 onResize(resize);
-
-onBeforeUpdate(() => {
-  console.log("trace update");
-});
 
 onUnmounted(() => {
   if (!app.value) return;
@@ -138,46 +131,3 @@ onUnmounted(() => {
   height: 100px;
 }
 </style>
-
-<!-- 
-  // const addAnimation = (animation: AnimeInstance) => animationsSet.add(animation);
-// const removeAnimation = (animation: AnimeInstance) =>
-//   animationsSet.delete(animation);
-
-
-// const getCanvasDimension = () => {
-//   if (!container.value) return 0;
-//   const { width, height } = container.value.getBoundingClientRect();
-//   return (width > height ? height : width) / getWindowResolution();
-// };
-
-
-const ticker = ref<Ticker | null>(null);
-
-// const addAnimation = (
-//   params: AnimeAnimParams,
-//   timelineOffset?: string | number | undefined
-// ): AnimeTimelineInstance => timeline.add(params, timelineOffset); 
-
-// const addAnimation = (fn: Animate) => animationsSet.add(fn);
-
-// const removeAnimation = (fn: Animate) => animationsSet.delete(fn);
-
-let currentTime = 0.0;
-// let progress = 0.0;
-// let elapsed = 0.0;
-// const onAnimate = (delta: number) => {
-//   if (!state.paused) {
-//     elapsed += delta;
-//     currentTime += ticker.value?.deltaMS || 0;
-//     currentTime = currentTime % state.duration;
-//     // progress = ((currentTime / state.duration) % 1) * 100;
-//     progress = (currentTime / state.duration) * 100;
-//   } else {
-//     progress = state.progress;
-//     currentTime = (state.duration * state.progress) / 100;
-//   }
-//   // const step = Math.floor(elapsed % state.steps);
-//   // animationsSet.forEach((fn) => fn(delta, elapsed, currentTime, progress));
-// };
--->

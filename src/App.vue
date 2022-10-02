@@ -31,23 +31,30 @@ import TimelineController from "@/components/timeline/Controller.vue";
 
     <main>
       <div class="controller">
-        <h2 class="sr-only">Renderer Controls Form</h2>
+        <h2 class="sr-only">Animation Parameters Form</h2>
         <ControllerText />
         <ControllerParticles />
         <ControllerBackground />
-        <ControllerVideoPreview />
       </div>
       <div class="renderer">
         <h2 class="sr-only">Animation Renderer</h2>
-
         <RendererProvider :options="{ width: 540, height: 540 }">
           <RendererBackground />
           <RendererParticles />
-          <RendererText />
+          <RendererText
+            animationID="textShadow"
+            fill="rgba(100,100,100,0.4)"
+            :waveAmplitude="8.0"
+          />
+
+          <RendererText animationID="textFront" fill="#ffffff" />
           <VideoPreview />
         </RendererProvider>
-        <TimelineController />
-        <VideoPreviewController />
+        <div>
+          <h3 class="sr-only">Animation Controls Form</h3>
+          <TimelineController />
+          <VideoPreviewController />
+        </div>
       </div>
     </main>
   </ContainerMain>
