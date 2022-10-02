@@ -4,6 +4,9 @@ export default {
 };
 </script>
 <script setup lang="ts">
+// TODO : throttle text change
+// http://www.kevinsubileau.fr/informatique/boite-a-code/php-html-css/javascript-debounce-throttle-reduire-appels-fonction.html
+
 import { reactiveSate } from "./store";
 import DetailsSummary from "@ui/DetailsSummary.vue";
 import { onMounted, ref } from "vue";
@@ -20,8 +23,6 @@ onMounted(async () => {
   <DetailsSummary summary="Text">
     <label class="label">
       Paragraph
-      <!-- TODO : throttle text change -->
-      <!-- http://www.kevinsubileau.fr/informatique/boite-a-code/php-html-css/javascript-debounce-throttle-reduire-appels-fonction.html -->
       <textarea class="input" v-model="reactiveSate.text" rows="2" />
     </label>
     <label class="label">

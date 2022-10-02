@@ -37,14 +37,14 @@ import TimelineController from "@/components/timeline/Controller.vue";
       </div>
       <div class="renderer">
         <h2 class="sr-only">Animation Renderer</h2>
-        <RendererProvider :options="{ width: 540, height: 540 }">
+        <RendererProvider :options="{ width: 720, height: 720 }">
           <RendererBackground />
           <RendererParticles />
           <RendererText
             fill="#4d9a9d"
             :waveFrequencyX="-5.0"
             :waveFrequencyY="-2.0"
-            :waveAmplitude="20.0"
+            :waveAmplitude="15.0"
           />
           <RendererText
             fill="#ffffff"

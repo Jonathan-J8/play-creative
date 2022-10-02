@@ -2,6 +2,7 @@ import { BLEND_MODES, Filter, filters, Text, type ITextStyle } from "pixi.js";
 
 import { WIDTH_NORMALIZE, HEIGHT_NORMALIZE } from "./constants";
 
+// FIX : final text position is different regards fontFamily
 const createText = (text: string, style?: Partial<ITextStyle>): Text => {
   return new Text(text, {
     fontFamily: "Arial",
@@ -128,6 +129,7 @@ export const createWaveFilter = (props?: WaveUniforms) => {
   return filter;
 };
 
+// TODO : implement a new filter near paper texture. NoiseFilter render a "kind of" paper texture
 export const createNoiseFilter = () => {
   const filter = new filters.NoiseFilter(0.8);
   filter.blendMode = BLEND_MODES.ADD;
