@@ -49,7 +49,18 @@ const addChild = (child: DisplayObject) => app.value.stage.addChild(child);
 const removeChild = (child: DisplayObject) =>
   app.value.stage.removeChild(child);
 
-const getScreenDimension = () => app.value.screen;
+// override the default screen to fit in any browser resolution
+const getScreenDimension = () => {
+  const { x, y, width, height } = app.value.screen;
+  const res = getWindowResolution();
+  return {
+    ...app.value.screen,
+    x: x / res,
+    y: y / res,
+    width: width / res,
+    height: height / res,
+  };
+};
 
 const generateTexture = (displayObject: IRenderableObject) =>
   app.value.renderer.generateTexture(displayObject);
@@ -70,9 +81,9 @@ provide<RendererContext>(RENDERER_KEY, {
  */
 
 const resize = () => {
-  // methods who resize the scale of the parent htmlelement
-  // the app scale stay the same on window resize so
-  // there is no need to resize the app screen/renderer
+  // methods who resize the scale of the parent htmlelement.
+  // the app scale stay the same on window resize,
+  // so, there is no need to resize the app screen/renderer
   if (!innerContainer.value || !outerContainer.value) return;
   const w1 = outerContainer.value.clientWidth;
   const h1 = outerContainer.value.clientHeight;
@@ -82,8 +93,7 @@ const resize = () => {
 };
 
 onMounted(() => {
-  // TODO : window resolution
-  // app.value.renderer.resolution = 1; //getWindowResolution();
+  app.value.renderer.resolution = getWindowResolution();
 
   if (!innerContainer.value)
     throw new Error("Renderer did not found parent HTMLElement");

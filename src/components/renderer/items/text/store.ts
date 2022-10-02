@@ -7,7 +7,7 @@ type State = {
 
 const defaultState: State = {
   text: "Creative Developer \nat PlayPlay",
-  fontFamily: "Courier",
+  fontFamily: "Arial",
 };
 
 export const reactiveSate = reactive<State>({

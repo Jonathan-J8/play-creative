@@ -47,7 +47,6 @@ const RendererBackground = defineComponent({
         height,
         count: state.count,
       });
-
       cells.forEach((cell) => {
         const turbulenceXY =
           Math.random() * state.turbulenceXY - state.turbulenceXY / 2;

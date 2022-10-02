@@ -1,3 +1,6 @@
+// TODO : optimize because of expensive computation from Text()
+// look after https://github.com/PixelsCommander/pixi-sdf-text
+
 import { defineComponent, watch } from "vue";
 import { Container } from "pixi.js";
 import anime from "animejs";

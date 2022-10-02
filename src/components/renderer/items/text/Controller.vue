@@ -20,13 +20,13 @@ onMounted(async () => {
   <DetailsSummary summary="Text">
     <label class="label">
       Paragraph
+      <!-- TODO : debounce text change -->
       <textarea class="input" v-model="reactiveSate.text" rows="2" />
     </label>
     <label class="label">
       Font
       <select v-model="reactiveSate.fontFamily">
         <option disabled value="">Please select a font</option>
-        <!-- <option>Arial</option> -->
         <option v-for="font in fonts" :key="font">{{ font }}</option>
       </select>
     </label>
