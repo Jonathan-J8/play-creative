@@ -1,3 +1,5 @@
+// TODO : use localstorage to handle form's inputs
+
 type Option = {
   immutable: boolean;
 };

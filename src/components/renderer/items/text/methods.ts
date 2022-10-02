@@ -1,4 +1,5 @@
 import { BLEND_MODES, Filter, filters, Text, type ITextStyle } from "pixi.js";
+
 import { WIDTH_NORMALIZE, HEIGHT_NORMALIZE } from "./constants";
 
 const createText = (text: string, style?: Partial<ITextStyle>): Text => {
@@ -16,7 +17,7 @@ const createText = (text: string, style?: Partial<ITextStyle>): Text => {
 
 /**
  * Split the text by line. Needed to get the right coordinates.
- * The text is centered XY relative the canvas and is not drawn to screen
+ * The text is centered XY relative the canvas and its not drawn to screen
  */
 
 type TextLayoutParams = {
@@ -33,8 +34,10 @@ export const createLayout = (
   const middleX = width / 2;
   const middleY = height / 2;
   const heightNorm = height / HEIGHT_NORMALIZE;
+  // TODO : write a better reguex for handling unix and windows system
   // const textSplit = text.split(/(?=\n)/);
-  const textSplit = text.split("\n");
+  const isUnixSytem = text.match(/\n/);
+  const textSplit = isUnixSytem ? text.split("\n") : text.split("\rn");
   const middleRows = (textSplit.length - 1) / 2;
 
   const layouts = textSplit.map((str, i) => {
@@ -47,7 +50,7 @@ export const createLayout = (
 };
 
 /**
- * Split the text by character. Needed to animates characters individualy.
+ * Split the text by characters. Needed to animates characters's alpha individualy.
  * Each character is transposed from the layout position.
  */
 
@@ -109,10 +112,8 @@ export const createWaveFilter = (props?: WaveUniforms) => {
 
       vec2 sineWave( vec2 p )
       {
-        // float x = cos( x1 * p.x + uPhaseX ) * amp1;
-        // float y = sin( y1 * p.x + uPhaseY ) * amp2;
-        float x = cos( frequencyX * p.x + phase ) * (amplitude * 0.001);
-        float y = sin( frequencyY * p.x + phase ) * (amplitude * 0.001);
+        float x = cos( frequencyX * p.x + phase ) * ( amplitude * 0.0001 );
+        float y = sin( frequencyY * p.x + phase ) * ( amplitude * 0.001 );
         return vec2( p.x + x, p.y + y );
       }
 
@@ -128,60 +129,8 @@ export const createWaveFilter = (props?: WaveUniforms) => {
 };
 
 export const createNoiseFilter = () => {
-  const filter = new filters.NoiseFilter(0.5);
+  const filter = new filters.NoiseFilter(0.8);
   filter.blendMode = BLEND_MODES.ADD;
-  filter.resolution = 0.8;
+  filter.resolution = 1;
   return filter;
 };
-
-// export const waveFragment = `
-//       varying vec2 vTextureCoord;
-//       uniform sampler2D uSampler;
-//       uniform float uTime;
-//       void main(void)
-//       {
-//          gl_FragColor = texture2D(uSampler, vTextureCoord).yyyw * uTime ;
-//       }
-//   `;
-
-export const waveFragment = `
-      varying vec2 vTextureCoord;        // holds the Vertex position <-1,+1> !!!
-      uniform sampler2D uSampler;    // used texture unit
-      uniform float uPhaseX, uPhaseY, x1, x2, y1, y2, amp1, amp2;            
-
-      vec2 SineWave( vec2 p )
-      {
-        // convert Vertex position <-1,+1> to texture coordinate <0,1> and some shrinking so the effect dont overlap screen
-        // p.x=( 0.55*p.x)+0.5;
-        // p.y=(-0.55*p.y)+0.5;
-        // p.x=(1.1*p.x)-0.05;
-        // p.y=(1.1*p.y)-0.05;
-        // wave distortion
-        float x = cos( x1 * p.x + uPhaseX ) * amp1;
-        float y = sin( y1 * p.x + uPhaseY ) * amp2;
-        return vec2( p.x + x, p.y + y );
-      }
-
-      void main()
-      {
-        gl_FragColor = texture2D(uSampler,SineWave(vTextureCoord));
-      }
-  `;
-
-export const paperFragment = `
-      varying vec2 vTextureCoord;        // holds the Vertex position <-1,+1> !!!
-      uniform sampler2D uSampler;    // used texture unit
-      uniform float uPhaseX, uPhaseY, x1, x2, y1, y2, amp1, amp2;            
-
-      vec2 SineWave( vec2 p )
-      {
-        float x = sin( x1 * p.y + uPhaseX ) * amp1;
-        float y = sin( y1 * p.x + uPhaseY ) * amp2;
-        return vec2( p.x + x, p.y + y );
-      }
-
-      void main()
-      {
-        gl_FragColor = texture2D(uSampler,SineWave(vTextureCoord));
-      }
-  `;

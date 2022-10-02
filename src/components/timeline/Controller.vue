@@ -5,6 +5,7 @@ export default {
 </script>
 <script setup lang="ts">
 import { watch } from "vue";
+
 import { animations, reactiveState } from "./store";
 
 const playPauseAnimations = (paused: boolean) => {
@@ -35,7 +36,7 @@ const restart = () => {
 // fire when paused state change.
 watch(() => reactiveState.paused, playPauseAnimations);
 
-// fire when animations state change. utils when adding/removing animations
+// fire when adding/removing animations.
 watch(animations, (a) => {
   playPauseAnimations(reactiveState.paused);
 });

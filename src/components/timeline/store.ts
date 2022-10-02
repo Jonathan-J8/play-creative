@@ -1,9 +1,9 @@
 import { readonly, reactive } from "vue";
-import anime from "animejs";
-import type { AnimeParams, AnimeInstance } from "animejs";
+import anime, { type AnimeParams, type AnimeInstance } from "animejs";
 
 /**
- * Batch all animations in a Ref<Map()>
+ * Batch all animations in a Map()
+ * Make it reactive to stay up to date with the timeline state
  */
 export const animations = reactive(new Map<string, AnimeInstance>());
 

@@ -16,12 +16,7 @@
   min-height: -webkit-fill-available;
   min-height: -moz-available;
 }
-/* 
-@media (max-width: 1280px) {
-  .container {
-    background-color: aquamarine;
-  }
-} */
+
 @media (max-width: 1024px) {
   .container {
     padding: 2rem;

@@ -5,6 +5,7 @@ export default {
 </script>
 <script setup lang="ts">
 import { range2numberFromObject } from "@utils/converter";
+
 import { reactiveSate } from "./store";
 
 const handleOpacity = range2numberFromObject(reactiveSate, "opacity");

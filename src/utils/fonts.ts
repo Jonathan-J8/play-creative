@@ -1,3 +1,4 @@
+// TODO : get the defaults fonts from unix/windows system
 const fontCheck = new Set(
   [
     // Windows 10
@@ -125,16 +126,16 @@ const fontCheck = new Set(
   ].sort()
 );
 
-(async () => {
-  await document.fonts.ready;
+// (async () => {
+//   await document.fonts.ready;
 
-  const fontAvailable = new Set();
+//   const fontAvailable = new Set();
 
-  for (const font of fontCheck.values()) {
-    if (document.fonts.check(`12px "${font}"`)) {
-      fontAvailable.add(font);
-    }
-  }
+//   for (const font of fontCheck.values()) {
+//     if (document.fonts.check(`12px "${font}"`)) {
+//       fontAvailable.add(font);
+//     }
+//   }
 
-  console.log("Available Fonts:", [...fontAvailable.values()]);
-})();
+//   console.log("Available Fonts:", [...fontAvailable.values()]);
+// })();

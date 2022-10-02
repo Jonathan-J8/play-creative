@@ -1,8 +1,10 @@
 import { defineComponent, watch } from "vue";
 import { Graphics } from "pixi.js";
+
 import { hex2num } from "@utils/converter";
 import useRendererProvider from "@renderer/useRendererProvider";
-import BaseComponent from "@/components/renderer/items/BaseComponent";
+import BaseComponent from "@renderer/items/BaseComponent";
+
 import state from "./store";
 
 const RendererBackground = defineComponent({

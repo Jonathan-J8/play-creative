@@ -15,7 +15,9 @@ import {
 
 import onResize from "@hooks/onResize";
 import { getWindowResolution } from "@utils/window";
+
 import { RENDERER_KEY, type RendererContext } from "./constants";
+
 utils.skipHello();
 
 /**

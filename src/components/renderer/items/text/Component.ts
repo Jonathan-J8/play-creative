@@ -18,28 +18,27 @@ const RendererText = defineComponent({
   name: "RendererText",
   extends: BaseComponent,
   props: {
-    animationID: { type: String, default: "" },
     fill: { type: String, default: "#ffffff" },
     waveFrequencyX: { type: Number, default: 3.0 },
     waveFrequencyY: { type: Number, default: -2.0 },
     waveAmplitude: { type: Number, default: 3.0 },
-    wavePhase: { type: Number, default: 0.0 },
   },
   setup(props) {
     const renderer = useRendererProvider();
     const timeline = useTimeline();
     const container = new Container();
+    const noise = createNoiseFilter();
     const wave = createWaveFilter({
       frequencyX: props.waveFrequencyX,
       frequencyY: props.waveFrequencyY,
       amplitude: props.waveAmplitude,
-      phase: props.wavePhase,
+      phase: 0.0,
     });
 
-    const noise = createNoiseFilter();
-    const fadeAnimationID = `TextFade-${props.animationID}`;
-    const waveAnimationID = `TextWave-${props.animationID}`;
-    const noiseAnimationID = `TextNoise-${props.animationID}`;
+    const date = performance.now();
+    const fadeAnimationID = `TextFade-${date}`;
+    const waveAnimationID = `TextWave-${date}`;
+    const noiseAnimationID = `TextNoise-${date}`;
 
     return {
       props,

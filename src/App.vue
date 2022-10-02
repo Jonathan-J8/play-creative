@@ -20,8 +20,7 @@ import TimelineController from "@/components/timeline/Controller.vue";
 <template>
   <ContainerMain>
     <header>
-      <h1 class="sr-only">Play Play</h1>
-
+      <h1 class="sr-only">Play Creative</h1>
       <nav>
         <LinkHome>
           <IconLogo />
@@ -42,12 +41,17 @@ import TimelineController from "@/components/timeline/Controller.vue";
           <RendererBackground />
           <RendererParticles />
           <RendererText
-            animationID="textShadow"
-            fill="rgba(100,100,100,0.4)"
-            :waveAmplitude="8.0"
+            fill="#4d9a9d"
+            :waveFrequencyX="-5.0"
+            :waveFrequencyY="-2.0"
+            :waveAmplitude="20.0"
           />
-
-          <RendererText animationID="textFront" fill="#ffffff" />
+          <RendererText
+            fill="#ffffff"
+            :waveFrequencyX="3.0"
+            :waveFrequencyY="-2.0"
+            :waveAmplitude="5.0"
+          />
           <VideoPreview />
         </RendererProvider>
         <div>
@@ -87,10 +91,8 @@ main {
 
 .controller {
   min-width: 30%;
-  /* min-width: 50%; */
 }
 .renderer {
-  /* flex-grow: 1; */
   min-width: 50%;
 }
 </style>

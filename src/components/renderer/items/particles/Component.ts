@@ -2,11 +2,10 @@ import { defineComponent, watch } from "vue";
 import type { Sprite, RenderTexture } from "pixi.js";
 
 import { deg2rad } from "@/utils/converter";
-import useRendererProvider from "@renderer/useRendererProvider";
 import useTimeline from "@timeline/useTimeline";
+import useRendererProvider from "@renderer/useRendererProvider";
+import BaseComponent from "@renderer/items/BaseComponent";
 
-import BaseComponent from "../BaseComponent";
-import { ANIMATION_KEY } from "./constants";
 import { createGrid, createGraphic, createCells } from "./methods";
 import state from "./store";
 
@@ -19,11 +18,13 @@ const RendererBackground = defineComponent({
     const timeline = useTimeline();
     const { width, height } = renderer.getScreenDimension();
     const grid = createGrid({ width, height, rotation: state.rotation });
+    const rotateAnimationID = `ParticlesRotate-${performance.now()}`;
 
     return {
       renderer,
       timeline,
       grid,
+      rotateAnimationID,
     };
   },
 
@@ -59,8 +60,8 @@ const RendererBackground = defineComponent({
     populateGrid();
 
     const refreshAnimation = () => {
-      this.timeline.remove(ANIMATION_KEY);
-      this.timeline.add(ANIMATION_KEY, {
+      this.timeline.remove(this.rotateAnimationID);
+      this.timeline.add(this.rotateAnimationID, {
         targets: this.grid.children,
         rotation: (el: Sprite) => {
           return el.rotation + deg2rad(20);
@@ -77,7 +78,7 @@ const RendererBackground = defineComponent({
       ([count]) => {
         if (count === 0) {
           this.grid.removeChildren();
-          this.timeline.remove(ANIMATION_KEY);
+          this.timeline.remove(this.rotateAnimationID);
           return;
         }
 
