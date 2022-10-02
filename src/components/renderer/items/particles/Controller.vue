@@ -6,6 +6,7 @@ export default {
 <script setup lang="ts">
 import { range2numberFromObject } from "@/utils/converter";
 import DetailsSummary from "@ui/DetailsSummary.vue";
+
 import { reactiveSate } from "./store";
 
 const handleCount = range2numberFromObject(reactiveSate, "count");

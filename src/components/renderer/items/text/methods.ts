@@ -1,7 +1,5 @@
 import { Text, type ITextStyle } from "pixi.js";
-
-const WIDTH_NORMALIZE = 10;
-const HEIGHT_NORMALIZE = 10;
+import { WIDTH_NORMALIZE, HEIGHT_NORMALIZE } from "./constants";
 
 type TextLayoutParams = {
   width: number;
@@ -17,11 +15,11 @@ type TextCharsParams = {
 const createText = (text: string, style?: Partial<ITextStyle>): Text => {
   return new Text(text, {
     fontFamily: "BlinkMacSystemFont",
-    align: "left",
+    align: "center",
     dropShadow: false,
     fill: "#ffffff",
     fontSize: 20,
-    fontWeight: "700",
+    fontWeight: "600",
     lineJoin: "round",
     ...style,
   });
@@ -55,7 +53,7 @@ export const createLayout = (
 
 /**
  * Split the text by character. Needed to animates characters individualy.
- * Each characters are tranposed from the layout's text.
+ * Each character is transposed from the layout position.
  */
 export const createCharacters = (
   text: string,
@@ -72,7 +70,7 @@ export const createCharacters = (
   const textChars = text.split("").map((char) => {
     const text = createText(char, { ...style, fontSize });
     text.y = y + layouts[row].y;
-    text.x = x + prevX + prevWidth;
+    text.x = x + prevX + prevWidth; //- (text?.style?.dropShadowDistance || 0) / 2;
     prevWidth = text.width;
     prevX = text.x;
 

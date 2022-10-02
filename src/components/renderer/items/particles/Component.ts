@@ -3,12 +3,12 @@ import type { Sprite, RenderTexture } from "pixi.js";
 
 import { deg2rad } from "@/utils/converter";
 import useRendererProvider from "@renderer/useRendererProvider";
+import useTimeline from "@timeline/useTimeline";
 
 import BaseComponent from "../BaseComponent";
+import { ANIMATION_KEY } from "./constants";
 import { createGrid, createGraphic, createCells } from "./methods";
 import state from "./store";
-import useTimeline from "@timeline/useTimeline";
-import { ANIMATION_KEY } from "./constants";
 
 const RendererBackground = defineComponent({
   name: "RendererParticles",
@@ -19,7 +19,6 @@ const RendererBackground = defineComponent({
     const timeline = useTimeline();
     const { width, height } = renderer.getScreenDimension();
     const grid = createGrid({ width, height, rotation: state.rotation });
-    console.log(width, height);
 
     return {
       renderer,
@@ -64,7 +63,6 @@ const RendererBackground = defineComponent({
       this.timeline.add(ANIMATION_KEY, {
         targets: this.grid.children,
         rotation: (el: Sprite) => {
-          // return el.rotation + deg2rad(100);
           return el.rotation + deg2rad(20);
         },
         loop: true,

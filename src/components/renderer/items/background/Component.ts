@@ -11,43 +11,26 @@ const RendererBackground = defineComponent({
   setup() {
     const renderer = useRendererProvider();
     const square = new Graphics();
-    const { width, height } = renderer.getScreenDimension();
-
-    square.beginFill(hex2num(state.color));
-    square.drawRect(0, 0, width, height);
-    square.endFill();
-    square.pivot.set(0.5);
-    renderer.addChild(square);
 
     return { renderer, square };
   },
 
   mounted() {
-    // this.resize = () => {
-    //   const dim = this.renderer.getScreenDimension();
-    //   console.log(dim, dim2);
+    this.renderer.addChild(this.square);
 
-    //   this.square.scale.set(1);
-    //   console.log("resize");
-    // };
-    // window.addEventListener("resize", this.resize);
+    const fillRect = (color: string) => {
+      const { width, height } = this.renderer.getScreenDimension();
+      this.square.clear();
+      this.square.beginFill(hex2num(color));
+      this.square.drawRect(0, 0, width, height);
+      this.square.endFill();
+    };
+    fillRect(state.color);
 
-    watch(
-      () => state.color,
-      (color) => {
-        const { width, height } = this.renderer.getScreenDimension();
-
-        this.square.clear();
-        this.square.beginFill(hex2num(color));
-        this.square.drawRect(0, 0, width, height);
-        this.square.endFill();
-      }
-    );
+    watch(() => state.color, fillRect);
   },
 
   unmounted() {
-    window.removeEventListener("resize", this.resize);
-
     this.renderer.removeChild(this.square);
     this.square.destroy();
   },

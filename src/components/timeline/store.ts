@@ -26,8 +26,8 @@ type State = {
 };
 
 const defaultState: State = {
-  paused: true,
-  loop: true,
+  paused: false,
+  loop: false,
   progress: 0,
   duration: 4440,
 };

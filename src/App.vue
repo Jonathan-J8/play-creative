@@ -5,8 +5,6 @@ import LinkHome from "@ui/LinkHome.vue";
 
 import RendererProvider from "@renderer/Provider.vue";
 
-import RendererVideoPreview from "@renderer/items/videoPreview/Component.vue";
-import ControllerVideoPreview from "@renderer/items/videoPreview/Controller.vue";
 import RendererBackground from "@renderer/items/background/Component";
 import RendererParticles from "@renderer/items/particles/Component";
 import ControllerParticles from "@renderer/items/particles/Controller.vue";
@@ -14,6 +12,8 @@ import ControllerBackground from "@renderer/items/background/Controller.vue";
 import RendererText from "@renderer/items/text/Component";
 import ControllerText from "@renderer/items/text/Controller.vue";
 
+import VideoPreview from "@/components/videoPreview/Component.vue";
+import VideoPreviewController from "@/components/videoPreview/Controller.vue";
 import TimelineController from "@/components/timeline/Controller.vue";
 </script>
 
@@ -44,9 +44,10 @@ import TimelineController from "@/components/timeline/Controller.vue";
           <RendererBackground />
           <RendererParticles />
           <RendererText />
-          <RendererVideoPreview />
+          <VideoPreview />
         </RendererProvider>
         <TimelineController />
+        <VideoPreviewController />
       </div>
     </main>
   </ContainerMain>

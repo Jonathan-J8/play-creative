@@ -1,5 +1,6 @@
 import { inject } from "vue";
-import { RENDERER_KEY, type RendererContext } from "./store";
+
+import { RENDERER_KEY, type RendererContext } from "./constants";
 
 const useRendererProvider = (): RendererContext => {
   const renderer = inject<RendererContext>(RENDERER_KEY);

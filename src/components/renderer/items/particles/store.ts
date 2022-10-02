@@ -9,7 +9,7 @@ type State = {
 };
 
 const defaultState: State = {
-  count: 42,
+  count: 49,
   color: "#69c2b5",
   rotation: 30,
   turbulenceXY: 10,

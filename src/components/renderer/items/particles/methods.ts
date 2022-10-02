@@ -1,15 +1,13 @@
 import { Graphics, RenderTexture, Sprite, ParticleContainer } from "pixi.js";
 
 import { hex2num, deg2rad } from "@/utils/converter";
+import { TEXTURE_WIDTH, TEXTURE_HEIGHT } from "./constants";
 
 type CreateGridProps = {
   width: number;
   height: number;
   rotation: number;
 };
-
-const TXT_WIDTH = 221;
-const TXT_HEIGHT = 36.4;
 
 export const createGrid = ({
   width,
@@ -43,7 +41,7 @@ export const createGraphic = ({
 }: CreateGraphicProps): Graphics => {
   const rect = new Graphics();
   rect.beginFill(hex2num(color));
-  rect.drawRect(0, 0, width / TXT_WIDTH, height / TXT_HEIGHT);
+  rect.drawRect(0, 0, width / TEXTURE_WIDTH, height / TEXTURE_HEIGHT);
   rect.endFill();
   return rect;
 };
@@ -98,20 +96,4 @@ export const createCells = ({
   }
 
   return list;
-};
-
-export const animeCell = (cell: Sprite) => {
-  return () => {
-    const dir = Math.sign(Math.random() - 0.5);
-
-    cell.rotation = dir * Math.random();
-  };
-  // return anime({
-  //   targets: cell,
-  //   rotation: Math.random() * dir,
-  //   direction: "alternate",
-  //   loop: true,
-  //   autoplay: false,
-  //   easing: "steps(2)",
-  // });
 };

@@ -1,15 +1,14 @@
 <script lang="ts">
 export default {
-  name: "TimeLineControls",
+  name: "TimeLineController",
 };
 </script>
 <script setup lang="ts">
+import { onMounted, watch } from "vue";
 import { animations, reactiveState } from "./store";
 
-const play = () => {
-  reactiveState.paused = !reactiveState.paused;
-
-  if (!reactiveState.paused) {
+const playPauseAnimations = (paused: boolean) => {
+  if (!paused) {
     animations.forEach((a) => {
       a.play();
     });
@@ -19,23 +18,26 @@ const play = () => {
     });
   }
 };
+
+const play = () => {
+  reactiveState.paused = !reactiveState.paused;
+};
+
 const restart = () => {
   reactiveState.progress = 0;
   animations.forEach((a) => {
     a.seek(0);
+    a.pause();
   });
+  playPauseAnimations(reactiveState.paused);
 };
 
-const loop = () => {
-  reactiveState.loop = !reactiveState.loop;
+onMounted(async () => {
+  await new Promise((res) => setTimeout(res, 1000));
+  playPauseAnimations(reactiveState.paused);
+});
 
-  restart();
-};
-
-const seek = (e: Event) => {
-  const target = e.target as HTMLInputElement;
-  reactiveState.progress = parseInt(target?.value) || 0;
-};
+watch(() => reactiveState.paused, playPauseAnimations);
 </script>
 
 <template>
@@ -44,18 +46,8 @@ const seek = (e: Event) => {
       {{ reactiveState.paused ? "play" : "pause" }}
     </button>
     <button @click="restart">Restart</button>
-    <button @click="loop" :class="{ loop: reactiveState.loop }">Loop</button>
-    <label class="seek">
-      <input
-        @input="seek"
-        :value="reactiveState.progress"
-        step=".001"
-        type="range"
-        min="0"
-        max="100"
-      />
-      <span>{{ reactiveState.progress }}%</span>
-    </label>
+
+    <slot />
   </div>
 </template>
 
