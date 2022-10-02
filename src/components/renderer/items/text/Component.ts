@@ -1,5 +1,7 @@
-// TODO : optimize because of expensive computation from Text()
+// TODO : component to optimize because of expensive computation from Text()
 // look after https://github.com/PixelsCommander/pixi-sdf-text
+// or https://github.com/avgjs/pixi-richtext
+// aricle : https://blog.mapbox.com/drawing-text-with-signed-distance-fields-in-mapbox-gl-b0933af6f817
 
 import { defineComponent, watch } from "vue";
 import { Container } from "pixi.js";

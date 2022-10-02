@@ -20,7 +20,8 @@ onMounted(async () => {
   <DetailsSummary summary="Text">
     <label class="label">
       Paragraph
-      <!-- TODO : debounce text change -->
+      <!-- TODO : throttle text change -->
+      <!-- http://www.kevinsubileau.fr/informatique/boite-a-code/php-html-css/javascript-debounce-throttle-reduire-appels-fonction.html -->
       <textarea class="input" v-model="reactiveSate.text" rows="2" />
     </label>
     <label class="label">
