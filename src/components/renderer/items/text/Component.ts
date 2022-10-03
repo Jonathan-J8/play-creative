@@ -67,13 +67,13 @@ const RendererText = defineComponent({
       const layouts = createLayout(
         text,
         { width, height },
-        { fill: "#000000", fontFamily: fontFamily }
+        { fill: "#000000", fontFamily }
       );
 
       const characters = createCharacters(
         text,
         { width, layouts },
-        { fill: this.props.fill }
+        { fill: this.props.fill, fontFamily }
       );
 
       characters.sort(() => 0.5 - Math.random());
