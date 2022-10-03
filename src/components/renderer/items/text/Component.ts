@@ -69,17 +69,15 @@ const RendererText = defineComponent({
         { width, height },
         { fill: "#000000", fontFamily: fontFamily }
       );
+
       const characters = createCharacters(
         text,
         { width, layouts },
         { fill: this.props.fill }
       );
-      const randomConstant = Math.floor(Math.sqrt(characters.length));
-      let inc = 0;
-      characters.sort(() => {
-        return 0.5 - Math.random() + (inc % randomConstant);
-        inc += 1;
-      });
+
+      characters.sort(() => 0.5 - Math.random());
+
       this.container.removeChildren();
       characters.forEach((c) => this.container.addChild(c));
     };

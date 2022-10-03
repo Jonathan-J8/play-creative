@@ -24,19 +24,18 @@ export const remove = (key: string) => {
 /**
  * global timeline state
  */
+
 // TODO : implement duration, loop and progress in the state to have more controls over the timeline/animations
+// duration: number;
+// loop: boolean;
+// progress: number;
+
 type State = {
   paused: boolean;
-  // duration: number;
-  // loop: boolean | number;
-  // progress: number;
 };
 
 const defaultState: State = {
   paused: false,
-  // duration: 4440,
-  // loop: false,
-  // progress: 0,
 };
 
 export const reactiveState = reactive<State>({ ...defaultState });

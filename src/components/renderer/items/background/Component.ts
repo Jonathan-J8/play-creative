@@ -1,4 +1,4 @@
-import { defineComponent, watch } from "vue";
+import { defineComponent } from "vue";
 import { Graphics } from "pixi.js";
 
 import { hex2num } from "@utils/converter";
@@ -29,7 +29,7 @@ const RendererBackground = defineComponent({
     };
     fillRect(state.color);
 
-    watch(() => state.color, fillRect);
+    this.$watch(() => state.color, fillRect);
   },
 
   unmounted() {

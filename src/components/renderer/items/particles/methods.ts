@@ -4,42 +4,17 @@ import { hex2num, deg2rad } from "@/utils/converter";
 
 import { TEXTURE_WIDTH, TEXTURE_HEIGHT } from "./constants";
 
-type CreateGridProps = {
-  width: number;
-  height: number;
-  rotation: number;
-};
-
-export const createGrid = ({
-  width,
-  height,
-  rotation,
-}: CreateGridProps): ParticleContainer => {
-  const grid = new ParticleContainer(100, {
-    position: true,
-    rotation: true,
-  });
-
-  grid.pivot.x = width / 2;
-  grid.pivot.y = height / 2;
-  grid.x = width / 2;
-  grid.y = height / 2;
-  grid.rotation = deg2rad(rotation);
-  grid.scale.set(1.3);
-  return grid;
-};
-
-type CreateGraphicProps = {
+type CreateRectProps = {
   width: number;
   height: number;
   color: string;
 };
 
-export const createGraphic = ({
+export const createRect = ({
   width,
   height,
   color,
-}: CreateGraphicProps): Graphics => {
+}: CreateRectProps): Graphics => {
   const rect = new Graphics();
   rect.beginFill(hex2num(color));
   rect.drawRect(0, 0, width / TEXTURE_WIDTH, height / TEXTURE_HEIGHT);
@@ -47,7 +22,7 @@ export const createGraphic = ({
   return rect;
 };
 
-type CreateSpriteProps = {
+type CreateCellProps = {
   index: number;
   countSquare: number;
   width: number;
@@ -55,13 +30,13 @@ type CreateSpriteProps = {
   texture: RenderTexture;
 };
 
-export const createSprite = ({
+export const createCell = ({
   index,
   countSquare,
   width,
   height,
   texture,
-}: CreateSpriteProps): Sprite => {
+}: CreateCellProps): Sprite => {
   const col = index % countSquare;
   const row = Math.floor(index / countSquare);
   const scaleX = width / countSquare;
@@ -92,9 +67,34 @@ export const createCells = ({
   const countSquare = Math.floor(Math.sqrt(count));
 
   for (let index = 0; index < count; index++) {
-    const sprite = createSprite({ index, countSquare, width, height, texture });
+    const sprite = createCell({ index, countSquare, width, height, texture });
     list.push(sprite);
   }
 
   return list;
+};
+
+type CreateGridProps = {
+  width: number;
+  height: number;
+  rotation: number;
+};
+
+export const createGrid = ({
+  width,
+  height,
+  rotation,
+}: CreateGridProps): ParticleContainer => {
+  const grid = new ParticleContainer(100, {
+    position: true,
+    rotation: true,
+  });
+
+  grid.pivot.x = width / 2;
+  grid.pivot.y = height / 2;
+  grid.x = width / 2;
+  grid.y = height / 2;
+  grid.rotation = deg2rad(rotation);
+  grid.scale.set(1.3);
+  return grid;
 };
