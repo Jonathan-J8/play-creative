@@ -3,7 +3,7 @@
 // or https://github.com/avgjs/pixi-richtext
 // aricle : https://blog.mapbox.com/drawing-text-with-signed-distance-fields-in-mapbox-gl-b0933af6f817
 
-import { defineComponent, watch } from "vue";
+import { defineComponent } from "vue";
 import { Container } from "pixi.js";
 import anime from "animejs";
 
@@ -131,19 +131,25 @@ const RendererText = defineComponent({
     };
     refreshNoiseAnime();
 
-    watch(state, (state) => {
-      if (!state.text) {
-        this.container.removeChildren();
-        this.timeline.remove(this.fadeAnimationID);
-        return;
+    this.$watch(
+      () => [state.text, state.fontFamily],
+      ([text, fontFamily]: string[]) => {
+        if (!text) {
+          this.container.removeChildren();
+          this.timeline.remove(this.fadeAnimationID);
+          return;
+        }
+        populateContainer(text, fontFamily);
+        refreshFadeAnime();
       }
-      populateContainer(state.text, state.fontFamily);
-      refreshFadeAnime();
-    });
+    );
   },
 
   unmounted() {
     this.renderer.removeChild(this.container);
+    this.timeline.remove(this.fadeAnimationID);
+    this.timeline.remove(this.waveAnimationID);
+    this.timeline.remove(this.noiseAnimationID);
     this.container.removeChild();
     this.container.destroy();
   },

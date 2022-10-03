@@ -1,35 +1,37 @@
 <template>
-  <div class="container">
-    <slot />
-  </div>
+  <main>
+    <div class="left">
+      <slot name="left"> </slot>
+    </div>
+    <div class="right">
+      <slot name="right"> </slot>
+    </div>
+  </main>
 </template>
 
 <style scoped>
-.container {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 3rem;
-  padding-bottom: 0;
-  font-weight: normal;
-  min-height: 100vh;
-  min-height: fill-available;
-  min-height: -webkit-fill-available;
-  min-height: -moz-available;
+main {
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap-reverse;
+  justify-content: flex-start;
+  align-items: stretch;
+  gap: 1rem;
 }
 
-@media (max-width: 1024px) {
-  .container {
-    padding: 2rem;
-  }
-}
 @media (max-width: 768px) {
-  .container {
-    padding: 1rem;
+  main {
+    justify-content: center;
+  }
+  .right {
+    width: 100%;
   }
 }
-@media (max-width: 640px) {
-  .container {
-    padding: 1rem;
-  }
+
+.left {
+  min-width: 30%;
+}
+.right {
+  min-width: 50%;
 }
 </style>

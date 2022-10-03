@@ -16,13 +16,23 @@ const handleTurbulenceRotation = range2numberFromObject(
   reactiveSate,
   "turbulenceRotation"
 );
+
+const handleColor = (e: Event) => {
+  const target = e.target as HTMLInputElement;
+  reactiveSate.color = target.value;
+};
 </script>
 
 <template>
   <DetailsSummary summary="Particles">
-    <label class="label">
+    <label class="label shrink">
       Color
-      <input class="input" v-model="reactiveSate.color" type="color" />
+      <input
+        class="input"
+        :value="reactiveSate.color"
+        @change="handleColor"
+        type="color"
+      />
     </label>
 
     <label class="label">
@@ -79,3 +89,9 @@ const handleTurbulenceRotation = range2numberFromObject(
     </label>
   </DetailsSummary>
 </template>
+
+<style scoped>
+.shrink {
+  width: min-content;
+}
+</style>

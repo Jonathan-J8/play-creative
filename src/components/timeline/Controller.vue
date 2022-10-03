@@ -10,11 +10,11 @@ import { animations, reactiveState } from "./store";
 
 const playPauseAnimations = (paused: boolean) => {
   if (!paused) {
-    animations.forEach((a) => {
+    animations.batch.forEach((a) => {
       a.play();
     });
   } else {
-    animations.forEach((a) => {
+    animations.batch.forEach((a) => {
       a.pause();
     });
   }
@@ -25,8 +25,7 @@ const play = () => {
 };
 
 const restart = () => {
-  reactiveState.progress = 0;
-  animations.forEach((a) => {
+  animations.batch.forEach((a) => {
     a.seek(0);
     a.pause();
   });
@@ -37,9 +36,12 @@ const restart = () => {
 watch(() => reactiveState.paused, playPauseAnimations);
 
 // fire when adding/removing animations.
-watch(animations, (a) => {
-  playPauseAnimations(reactiveState.paused);
-});
+watch(
+  () => animations.id,
+  (a) => {
+    playPauseAnimations(reactiveState.paused);
+  }
+);
 </script>
 
 <template>

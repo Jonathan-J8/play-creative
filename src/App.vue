@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import IconLogo from "@icons/Logo.vue";
-import ContainerMain from "@ui/ContainerMain.vue";
 import LinkHome from "@ui/LinkHome.vue";
+import ContainerRoot from "@ui/ContainerRoot.vue";
+import ContainerMain from "@ui/ContainerMain.vue";
 
 import RendererProvider from "@renderer/Provider.vue";
 
@@ -18,7 +19,7 @@ import TimelineController from "@/components/timeline/Controller.vue";
 </script>
 
 <template>
-  <ContainerMain>
+  <ContainerRoot>
     <header>
       <h1 class="sr-only">Play Creative</h1>
       <nav>
@@ -28,14 +29,14 @@ import TimelineController from "@/components/timeline/Controller.vue";
       </nav>
     </header>
 
-    <main>
-      <div class="controller">
+    <ContainerMain>
+      <template #left>
         <h2 class="sr-only">Animation Parameters Form</h2>
         <ControllerText />
         <ControllerParticles />
         <ControllerBackground />
-      </div>
-      <div class="renderer">
+      </template>
+      <template #right>
         <h2 class="sr-only">Animation Renderer</h2>
         <RendererProvider :options="{ width: 720, height: 720 }">
           <RendererBackground />
@@ -59,9 +60,9 @@ import TimelineController from "@/components/timeline/Controller.vue";
           <TimelineController />
           <VideoPreviewController />
         </div>
-      </div>
-    </main>
-  </ContainerMain>
+      </template>
+    </ContainerMain>
+  </ContainerRoot>
 </template>
 
 <style scoped>
@@ -69,30 +70,5 @@ header {
   display: flex;
   place-items: center;
   margin-bottom: 4rem;
-}
-
-main {
-  width: 100%;
-  display: flex;
-  flex-wrap: wrap-reverse;
-  justify-content: flex-start;
-  align-items: stretch;
-  gap: 1rem;
-}
-
-@media (max-width: 768px) {
-  main {
-    justify-content: center;
-  }
-  .renderer {
-    width: 100%;
-  }
-}
-
-.controller {
-  min-width: 30%;
-}
-.renderer {
-  min-width: 50%;
 }
 </style>

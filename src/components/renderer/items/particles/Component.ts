@@ -1,4 +1,4 @@
-import { defineComponent, watch } from "vue";
+import { defineComponent } from "vue";
 import type { Sprite, RenderTexture } from "pixi.js";
 
 import { deg2rad } from "@/utils/converter";
@@ -73,7 +73,7 @@ const RendererBackground = defineComponent({
     };
     refreshAnimation();
 
-    watch(
+    this.$watch(
       () => [state.count, state.turbulenceXY, state.turbulenceRotation],
       ([count]) => {
         if (count === 0) {
@@ -87,10 +87,11 @@ const RendererBackground = defineComponent({
       }
     );
 
-    watch(
+    this.$watch(
       () => state.color,
-      (color) => {
+      (color: string) => {
         const { width, height } = this.renderer.getScreenDimension();
+
         const texture = this.renderer.generateTexture(
           createGraphic({ width, height, color })
         );
@@ -101,9 +102,9 @@ const RendererBackground = defineComponent({
       }
     );
 
-    watch(
+    this.$watch(
       () => state.rotation,
-      (rotation) => {
+      (rotation: number) => {
         this.grid.rotation = deg2rad(rotation);
       }
     );
@@ -111,6 +112,7 @@ const RendererBackground = defineComponent({
 
   unmounted() {
     this.renderer.removeChild(this.grid);
+    this.timeline.remove(this.rotateAnimationID);
     this.grid.removeChildren();
     this.grid.destroy();
   },
