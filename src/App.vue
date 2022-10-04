@@ -44,13 +44,13 @@ import TimelineController from "@/components/timeline/Controller.vue";
           <RendererText
             fill="#4d9a9d"
             :waveFrequencyX="-5.0"
-            :waveFrequencyY="-2.0"
+            :waveFrequencyY="-7.0"
             :waveAmplitude="15.0"
           />
           <RendererText
             fill="#ffffff"
             :waveFrequencyX="3.0"
-            :waveFrequencyY="-2.0"
+            :waveFrequencyY="-7.0"
             :waveAmplitude="5.0"
           />
           <VideoPreview />

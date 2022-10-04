@@ -105,9 +105,9 @@ const RendererText = defineComponent({
       this.timeline.add(this.waveAnimationID, {
         targets: this.wave.uniforms,
         loop: true,
-        phase: 10,
-        easing: "steps(10)",
-        duration: 2000,
+        phase: Math.PI * 2,
+        easing: "steps(5)",
+        duration: 1000,
         autoplay: false,
       });
     };
